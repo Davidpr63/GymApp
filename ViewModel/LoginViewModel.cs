@@ -35,7 +35,7 @@ namespace GymApp.ViewModel
         private void Login() 
         {
             
-            bool IsValid = LoginIsValid();
+            bool IsValid = LoginIsValid(); 
             if (IsValid)
             {
                 LoginSuccess?.Invoke();
