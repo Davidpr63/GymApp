@@ -34,7 +34,7 @@ namespace GymApp.View
             _viewModel = new LoginViewModel(_userRepository);
             _viewModel.LoginSuccess = () =>
             {
-                var mainWindow = new MainWindow(_viewModel.Username);
+                var mainWindow = new MainWindow(_viewModel.Username, _userRepository);
                 mainWindow.Show();
                 this.Close();
             };  

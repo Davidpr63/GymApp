@@ -1,4 +1,5 @@
-﻿using GymApp.ViewModel;
+﻿using GymApp.Database.IRepository;
+using GymApp.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,10 +22,31 @@ namespace GymApp
     /// </summary>
     public partial class MainWindow : Window
     {
-        public MainWindow(string username)
+        public MainWindow(string username, IUserRepository userRepository)
         {
             InitializeComponent();
-            this.DataContext = new MainWindowViewModel(username); 
+            
+            this.DataContext = new MainWindowViewModel(username, userRepository); 
+        }
+
+        private void Search_GotFocus(object sender, RoutedEventArgs e)
+        {
+            SearchTB.Text = "";
+            SearchTB.Foreground = Brushes.Black;
+        }
+
+        private void Search_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if(string.IsNullOrEmpty(SearchTB.Text))
+            {
+                SearchTB.Text = "Unesite ID clana...";
+                SearchTB.Foreground = Brushes.Gray;
+            }
+        }
+
+        private void Search_SelectionChanged(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

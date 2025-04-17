@@ -17,6 +17,8 @@ namespace GymApp.ViewModel
     public class LoginViewModel : INotifyPropertyChanged
     {
         private readonly IUserRepository _userRepository;
+        public Action LoginSuccess { get; set; }
+        #region Properties
         private string _username;
         public string Username { get => _username; set { _username = value; OnPropertyChanged(); } }
         private string _password;
@@ -24,8 +26,12 @@ namespace GymApp.ViewModel
 
         private string _passwordError;
         public string PasswordError { get => _passwordError; set { _passwordError = value; OnPropertyChanged(); } }
-        public Action LoginSuccess { get; set; }
+        #endregion
+
+        #region Commands
         public ICommand LoginCommand { get; }
+        #endregion
+
         public LoginViewModel(IUserRepository userRepository)
         {
             _userRepository = userRepository;

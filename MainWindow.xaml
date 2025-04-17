@@ -6,71 +6,120 @@
         xmlns:local="clr-namespace:GymApp"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
+    <Window.Resources>
+       
+        
+    </Window.Resources>
     <Grid>
-        <!-- Top bar -->
-        <Grid Background="#f0f0f0" Height="50" VerticalAlignment="Top">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
+        <StackPanel>
+            <Grid Background="#f0f0f0" Height="50" VerticalAlignment="Top">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
 
-            <!-- Logged-in username -->
-            <TextBlock Text="{Binding LoggedInUsername}" 
-                       VerticalAlignment="Center" Margin="10,0"
-                       FontWeight="Bold" FontSize="16"/>
+                <!-- Logged-in username -->
+                <TextBlock Text="{Binding LoggedInUsername}" 
+               VerticalAlignment="Center" Margin="10,0"
+               FontWeight="Bold" FontSize="16"/>
 
-            <!-- Log out button -->
-            <Button Content="Log Out"
+                <!-- Log out button -->
+                <Button Content="Log Out"
                     Command="{Binding LogoutCommand}"
                     Margin="0,0,10,0" Width="100" Height="30"
                     VerticalAlignment="Center"
                     Grid.Column="1" />
-        </Grid>
 
-        <!-- Table -->
-        <DataGrid ItemsSource="{Binding Users}" 
-                  AutoGenerateColumns="False" 
-                  Margin="10,60,10,10"
-                  HeadersVisibility="Column"
-                  CanUserAddRows="False"
-                  IsReadOnly="True">
+            </Grid>
+            <Grid Background="#f0f0f0" Height="50" VerticalAlignment="Top">
+                <StackPanel HorizontalAlignment="Left" VerticalAlignment="Center" Orientation="Horizontal">
+                    <Button 
+                        Content="Dodaj novog clana"
+                        VerticalAlignment="Center"  
+                        Height="40"
+                        Width="auto"
+                        Margin="10 0 10 0"
+                        Command="{Binding AddNewMemberCommand}"
+                    />
+                    <CheckBox
+                        Content="Aktivni clanovi"
+                        VerticalAlignment="Center"
+                        Margin="10"
+                        IsChecked="{Binding ActiveMembersIsChecked}"
+                    />
+                    <CheckBox
+                        Content="Aktivni(Nisu platili)"
+                        VerticalAlignment="Center"
+                        Margin="10"
+                        IsChecked="{Binding ActiveMembersNotPaidIsChecked}"
+                    />
+                    <TextBlock
+                        Text="Pronadji clana(ID):"
+                        VerticalAlignment="Center"
+                        Margin="10"
+                    />
+                    <TextBox x:Name="SearchTB" 
+                        Width="150"
+                        Height="20"
+                        Margin="10"
+                        GotFocus="Search_GotFocus"
+                        LostFocus="Search_LostFocus"
+                        Text="{Binding SearchId, UpdateSourceTrigger=PropertyChanged}"
+                        SelectionChanged="Search_SelectionChanged"
+                        Foreground="Gray"
+                    />
+                </StackPanel>
+            </Grid>
+            <!-- Table -->
+            <DataGrid ItemsSource="{Binding Members}" 
+              AutoGenerateColumns="False" 
+              Margin="10,0,10,30"
+              HeadersVisibility="Column"
+              CanUserAddRows="False"
+              IsReadOnly="True">    
 
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="First Name" Binding="{Binding Firstname}" />
-                <DataGridTextColumn Header="Last Name" Binding="{Binding Lastname}" />
-                
-                <!-- Colored circle column -->
-                <DataGridTemplateColumn Header="Active">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <Ellipse Width="16" Height="16" 
-                                     Fill="{Binding IsMembershipPaid, Converter={StaticResource BoolToColorConverter}}" 
-                                     Stroke="Black" StrokeThickness="1"/>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-                <!--Extend button-->
-                <DataGridTemplateColumn Header="Extend">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <Button Content="Extend"
-                        Command="{Binding DataContext.ExtendCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
-                        CommandParameter="{Binding Id}" />
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-                <!-- Details button -->
-                <DataGridTemplateColumn Header="Details">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <Button Content="Details" Command="{Binding DataContext.DetailsCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
-                                    CommandParameter="{Binding Id}" />
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="First Name" Binding="{Binding Firstname}" />
+                    <DataGridTextColumn Header="Last Name" Binding="{Binding Lastname}" />
 
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
+                    <!-- Colored circle column -->
+                    <DataGridTemplateColumn Header="Active">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Ellipse Width="16" Height="16" 
+                             Fill="{Binding IsMembershipPaid, Converter={StaticResource BoolToColorConverter}}" 
+                             Stroke="Black" StrokeThickness="1"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <!--Extend button-->
+                    <DataGridTemplateColumn Header="Extend">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button Content="Extend"
+                Command="{Binding DataContext.ExtendCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                CommandParameter="{Binding Id}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <!-- Details button -->
+                    <DataGridTemplateColumn Header="Details">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button Content="Details" Command="{Binding DataContext.DetailsCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                            CommandParameter="{Binding Id}" />
 
-            </DataGrid.Columns>
-        </DataGrid>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                </DataGrid.Columns>
+            </DataGrid>
+        </StackPanel>
+        <!-- Top bar -->
+        
+
+        
     </Grid>
 </Window>
