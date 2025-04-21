@@ -29,9 +29,10 @@ namespace GymApp.Database.Repository
                 File.WriteAllText(_filePath, "[]");
             }
         }
-        public void Add(T entity)
+        public virtual void Add(T entity)
         {
             var list = GetAll();
+            
             list.Add(entity);
             SaveAll(list);
         }
@@ -60,7 +61,7 @@ namespace GymApp.Database.Repository
             var json = JsonSerializer.Serialize(items, new JsonSerializerOptions { WriteIndented = true });
             File.WriteAllText(_filePath, json);
         }
-        public void Update(T entity)
+        public virtual void Update(T entity)
         {
             throw new NotImplementedException();
         }

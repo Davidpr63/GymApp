@@ -94,17 +94,17 @@
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
                     <!--Extend button-->
-                    <DataGridTemplateColumn Header="Extend">
+                    <DataGridTemplateColumn>
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <Button Content="Extend"
+                                <Button Content="Obnovi"
                 Command="{Binding DataContext.ExtendCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
                 CommandParameter="{Binding Id}" />
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
                     <!-- Details button -->
-                    <DataGridTemplateColumn Header="Details">
+                    <DataGridTemplateColumn >
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <Button Content="Details" Command="{Binding DataContext.DetailsCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"

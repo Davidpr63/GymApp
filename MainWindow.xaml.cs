@@ -1,4 +1,5 @@
 ﻿using GymApp.Database.IRepository;
+using GymApp.View;
 using GymApp.ViewModel;
 using System;
 using System.Collections.Generic;
@@ -22,11 +23,22 @@ namespace GymApp
     /// </summary>
     public partial class MainWindow : Window
     {
+        private readonly MainWindowViewModel _viewModel;
         public MainWindow(string username, IUserRepository userRepository)
         {
             InitializeComponent();
-            
-            this.DataContext = new MainWindowViewModel(username, userRepository); 
+            _viewModel = new MainWindowViewModel(username, userRepository);
+            _viewModel.OpenAddMemberWindow = () =>
+            {
+                var addNewMemberWindow = new AddNewMemberPage(userRepository);
+                addNewMemberWindow.Show();
+            };
+            _viewModel.OpenDetailsWindow = (object id) =>
+            {
+                var detailsWindow = new DetailsPage(id, userRepository);
+                detailsWindow.Show();
+            };
+            this.DataContext = _viewModel; 
         }
 
         private void Search_GotFocus(object sender, RoutedEventArgs e)

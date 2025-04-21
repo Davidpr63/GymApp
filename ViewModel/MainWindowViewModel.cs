@@ -32,14 +32,22 @@ namespace GymApp.ViewModel
         #endregion
 
         #region Commands
-        #endregion
         public ICommand LogoutCommand { get; }
+        public ICommand AddNewMemberCommand {  get; }
+        public ICommand ExtendCommand { get; }
+        public ICommand DetailsCommand { get; }
+        #endregion
+        public Action OpenAddMemberWindow;
+        public Action<object> OpenDetailsWindow;
         public MainWindowViewModel(string username, IUserRepository userRepository)
         {
             LoggedInUsername = $"Welcome, {username}";
             _userRepository = userRepository;
             FillOutOutputList(_userRepository.GetAll());
             LogoutCommand = new RelayCommand(Logout);
+            AddNewMemberCommand = new RelayCommand(AddNewMember);
+            ExtendCommand = new RelayCommand(id => RenewMembership(id));
+            DetailsCommand = new RelayCommand(id => OpenDetails(id));
         }
 
         private void Logout()
@@ -141,6 +149,41 @@ namespace GymApp.ViewModel
                        MessageBoxImage.Error);
                 throw;
             }
+        }
+
+        private void AddNewMember()
+        {
+            OpenAddMemberWindow?.Invoke();
+        }
+
+        private void RenewMembership(object id)
+        {
+            int Id = Convert.ToInt32(id);
+            try
+            {
+                var member = _userRepository.GetAll().FirstOrDefault(x => x.Id == Id);
+                member.IsMembershipPaid = true;
+                member.PaymentDate = DateTime.Now;
+                member.ExpiryDate = DateTime.Now.AddDays(30);
+
+                _userRepository.Update(member);
+                FillOutOutputList(_userRepository.GetAll());
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("An error occurred while update a member:" + e.Message,
+                                       "Error",
+                                       MessageBoxButton.OK,
+                                       MessageBoxImage.Error);
+                throw;
+            }
+
+        }
+
+        private void OpenDetails(object id)
+        {
+            int Id = Convert.ToInt32(id);
+            OpenDetailsWindow?.Invoke(id);    
         }
         private void FillOutOutputList(List<User> list) 
         {

@@ -97,8 +97,16 @@
     <Compile Include="Database\IRepository\IUserRepository.cs" />
     <Compile Include="Database\Repository\GenericRepository.cs" />
     <Compile Include="Database\Repository\UserRepository.cs" />
+    <Compile Include="ViewModel\AddMemberViewModel.cs" />
+    <Compile Include="ViewModel\DetailsViewModel.cs" />
     <Compile Include="ViewModel\LoginViewModel.cs" />
     <Compile Include="ViewModel\MainWindowViewModel.cs" />
+    <Compile Include="View\AddNewMemberPage.xaml.cs">
+      <DependentUpon>AddNewMemberPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\DetailsPage.xaml.cs">
+      <DependentUpon>DetailsPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\LoginPage.xaml.cs">
       <DependentUpon>LoginPage.xaml</DependentUpon>
     </Compile>
@@ -114,6 +122,14 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="View\AddNewMemberPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\DetailsPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\LoginPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
