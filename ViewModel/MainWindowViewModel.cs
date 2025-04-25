@@ -1,5 +1,6 @@
 ﻿using GymApp.Common;
 using GymApp.Database.IRepository;
+using GymApp.GoogleDrive;
 using GymApp.Model;
 using System;
 using System.Collections.Generic;
@@ -17,6 +18,7 @@ namespace GymApp.ViewModel
     public class MainWindowViewModel : INotifyPropertyChanged
     {
         private readonly IUserRepository _userRepository;
+        private readonly GoogleDriveUploader _googleDriveUploader;
         public static ObservableCollection<User> Members { get; set; } = new ObservableCollection<User>();
         public ObservableCollection<User> _filteredMembers { get; set; } = new ObservableCollection<User>();
      
@@ -49,6 +51,8 @@ namespace GymApp.ViewModel
             AddNewMemberCommand = new RelayCommand(AddNewMember);
             ExtendCommand = new RelayCommand(id => RenewMembership(id));
             DetailsCommand = new RelayCommand(id => OpenDetails(id));
+           // _googleDriveUploader = new GoogleDriveUploader();
+          
         }
 
         private void Logout()
