@@ -44,7 +44,7 @@ namespace GymApp.Database.Repository
             list.Remove(entity);
         }
 
-        public T Get(int id)
+        public virtual T Get(int id)
         {
             var list = GetAll();
             return list.FirstOrDefault(x => x.Equals(id));

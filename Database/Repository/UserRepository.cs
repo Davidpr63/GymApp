@@ -35,5 +35,11 @@ namespace GymApp.Database.Repository
         {
             return GetAll().Any(x => x.Username.Equals(usename) && x.Password.Equals(password));
         }
+
+        public override User Get(int id)
+        {
+            return GetAll().FirstOrDefault(x => x.Id == id);
+            //return base.Get(id);
+        }
     }
 }

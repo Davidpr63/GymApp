@@ -30,10 +30,15 @@ namespace GymApp.ViewModel
         public ICommand AddNewMemberCommand { get; }
         #endregion
         private readonly IUserRepository _userRepository;
+        private readonly INotesRepository _notesRepository;
+        private readonly IPaymentHistoryRepository _paymentHistoryRepository;
         public Action CloseAddWindow;
-        public AddMemberViewModel(IUserRepository userRepository)
+        public Action RefreshOutputList;
+        public AddMemberViewModel(IUserRepository userRepository, INotesRepository notesRepository, IPaymentHistoryRepository paymentHistoryRepository)
         {
             _userRepository = userRepository;
+            _notesRepository = notesRepository;
+            _paymentHistoryRepository = paymentHistoryRepository;
             AddNewMemberCommand = new RelayCommand(AddNewMember);
         }
 
@@ -42,14 +47,33 @@ namespace GymApp.ViewModel
             bool result = IsAddFormValid();
             if (result)
             {
-                User newMember = new User() { Firstname = FirstName, Lastname = LastName};
+                User newMember = new User()
+                {
+                    Firstname = FirstName,
+                    Lastname = LastName,
+                    TypeUser = TypeUser.Member,
+                    Email = Email,
+                    IsMembershipPaid = true,
+                    PaymentDate = DateTime.Now,
+                    ExpiryDate = DateTime.Now.AddDays(30),
+                };
                 _userRepository.Add(newMember);
+                Note note = new Note() { Id = newMember.Id, Notes = "Unesite beleske..." };
+                _notesRepository.Add(note);
+                PaymentHistory paymentHistory = new PaymentHistory()
+                {
+                    Id = newMember.Id,
+                    IsPaid = true,
+                    PaymentDate = DateTime.Now.ToString("dd.mm.yyyy")
+                };
+                _paymentHistoryRepository.Add(paymentHistory);
                 MessageBox.Show("Novi clan je uspesno dodat",
                     "Uspesno",
                     MessageBoxButton.OK,
                     MessageBoxImage.Information
                     );
                 ErrorMessage = "";
+                MainWindowViewModel.FillOutOutputList(_userRepository.GetAll());
                 CloseAddWindow?.Invoke();
             }
             else

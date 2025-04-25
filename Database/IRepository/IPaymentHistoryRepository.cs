@@ -7,10 +7,7 @@ using System.Threading.Tasks;
 
 namespace GymApp.Database.IRepository
 {
-    public interface IUserRepository : IGenericRepository<User>
+    public interface IPaymentHistoryRepository : IGenericRepository<PaymentHistory>
     {
-        bool Authenticate(string usename, string password);
-
-
     }
 }

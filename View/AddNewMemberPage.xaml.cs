@@ -22,10 +22,10 @@ namespace GymApp.View
     public partial class AddNewMemberPage : Window
     {
         private readonly AddMemberViewModel _viewModel;
-        public AddNewMemberPage(IUserRepository userRepository)
+        public AddNewMemberPage(IUserRepository userRepository, INotesRepository notesRepository, IPaymentHistoryRepository paymentHistoryRepository)
         {
             InitializeComponent();
-            _viewModel = new AddMemberViewModel(userRepository);
+            _viewModel = new AddMemberViewModel(userRepository, notesRepository, paymentHistoryRepository);
             _viewModel.CloseAddWindow = () =>
             {
                 this.Close();
@@ -71,12 +71,20 @@ namespace GymApp.View
         }
         private void EmailTextBox_GotFocus(object sender, RoutedEventArgs e)
         {
-
+            if (EmailTextBox.Text.Equals("Unesite email..."))
+            {
+                EmailTextBox.Text = "";
+                EmailTextBox.Foreground = Brushes.Black;
+            }
         }
 
         private void EmailTextBox_LostFocus(object sender, RoutedEventArgs e)
         {
-
+            if (string.IsNullOrEmpty(EmailTextBox.Text))
+            {
+                EmailTextBox.Text = "Unesite email...";
+                EmailTextBox.Foreground = Brushes.Gray;
+            }
         }
     }
 }

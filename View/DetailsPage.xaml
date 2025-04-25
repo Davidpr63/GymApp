@@ -4,58 +4,103 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GymApp.View"
+       
         mc:Ignorable="d"
-        Title="DetailsPage" Height="450" Width="800">
+        Title="DetailsPage" Height="500" Width="900" WindowStartupLocation="CenterScreen">
+    <Window.Resources>
+         
+    </Window.Resources>
     <Grid Margin="20">
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <!-- Row for close button -->
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="200"/>
         </Grid.RowDefinitions>
 
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="150"/>
             <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
 
+        <!-- X Close Button -->
+        <Button Content="X" Width="30" Height="30" HorizontalAlignment="Right" 
+                Command="{Binding CloseDetailWindowCommand}"
+                Grid.Row="0" Grid.Column="2" Background="Red" Foreground="White" FontWeight="Bold"/>
+
+        <!-- Id -->
+        <TextBlock Grid.Row="1" Grid.Column="0" Text="ID:" VerticalAlignment="Center" FontWeight="Bold"/>
+        <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding Id}" FontWeight="Bold" VerticalAlignment="Center"/>
         <!-- Firstname -->
-        <TextBlock Grid.Row="0" Grid.Column="0" Text="Ime:" VerticalAlignment="Center" FontWeight="Bold"/>
-        <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding FirstName}" VerticalAlignment="Center"/>
+        <TextBlock Grid.Row="2" Grid.Column="0" Text="Ime:" VerticalAlignment="Center" FontWeight="Bold"/>
+        <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding FirstName}" VerticalAlignment="Center"/>
 
         <!-- Lastname -->
-        <TextBlock Grid.Row="1" Grid.Column="0" Text="Prezime:" VerticalAlignment="Center" FontWeight="Bold"/>
-        <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding LastName}" VerticalAlignment="Center"/>
+        <TextBlock Grid.Row="3" Grid.Column="0" Text="Prezime:" VerticalAlignment="Center" FontWeight="Bold"/>
+        <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding LastName}" VerticalAlignment="Center"/>
+
+        <!-- Email -->
+        <TextBlock Grid.Row="4" Grid.Column="0" Text="Email:" VerticalAlignment="Center" FontWeight="Bold"/>
+        <TextBlock Grid.Row="4" Grid.Column="1" Text="{Binding Email}" VerticalAlignment="Center"/>
 
         <!-- Payment Day -->
-        <TextBlock Grid.Row="2" Grid.Column="0" Text="Datum uplate:" VerticalAlignment="Center" FontWeight="Bold"/>
-        <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding PaymentDay}" VerticalAlignment="Center"/>
-        <!-- Email -->
-        <TextBlock Grid.Row="2" Grid.Column="0" Text="Email:" VerticalAlignment="Center" FontWeight="Bold"/>
-        <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding Email}" VerticalAlignment="Center"/>
+        <TextBlock Grid.Row="5" Grid.Column="0" Text="Datum uplate:" VerticalAlignment="Center" FontWeight="Bold"/>
+        <TextBlock Grid.Row="5" Grid.Column="1" Text="{Binding Path=PaymentDate, StringFormat=d.M.yyyy HH:mm}" VerticalAlignment="Center"/>
 
         <!-- Expiry Date -->
-        <TextBlock Grid.Row="3" Grid.Column="0" Text="Datum isteka:" VerticalAlignment="Center" FontWeight="Bold"/>
-        <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding ExpiryDate}" VerticalAlignment="Center"/>
+        <TextBlock Grid.Row="6" Grid.Column="0" Text="Datum isteka:" VerticalAlignment="Center" FontWeight="Bold"/>
+        <TextBlock Grid.Row="6" Grid.Column="1" Text="{Binding Path=ExpiryDate, StringFormat=d.M.yyyy HH:mm}" VerticalAlignment="Center"/>
 
-        <!-- Payment History -->
-        <TextBlock Grid.Row="4" Grid.Column="0" Text="Istorija placanja:" VerticalAlignment="Top" FontWeight="Bold"/>
-        <ScrollViewer Grid.Row="4" Grid.Column="1" VerticalScrollBarVisibility="Auto" Height="150">
-            <ItemsControl ItemsSource="{Binding PaymentHistory}">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <TextBlock Text="{Binding}" Margin="5"/>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-        </ScrollViewer>
+        <!-- Notes and Payment History side by side -->
+        <Grid Grid.Row="7" Grid.ColumnSpan="3" Margin="0,20,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="20"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
 
-        <!-- Notes -->
-        <TextBlock Grid.Row="5" Grid.Column="0" Text="Beleske:" VerticalAlignment="Top" FontWeight="Bold"/>
-        <TextBox Grid.Row="5" Grid.Column="1" AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" 
-                 Text="{Binding Notes, Mode=TwoWay}" Margin="0" />
+            <!-- Notes -->
+            <StackPanel Grid.Column="0">
+                <TextBlock Text="Beleške:" FontWeight="Bold" Margin="0,0,0,5"/>
+                <TextBox Height="200" AcceptsReturn="True" TextWrapping="Wrap" 
+                         VerticalScrollBarVisibility="Auto" 
+                         Text="{Binding Notes, Mode=TwoWay}" 
+                         x:Name="Notes" 
+                         GotFocus="TextBox_GotFocus" 
+                         LostFocus="TextBox_LostFocus"
+                         Foreground="Gray"/>
+            </StackPanel>
+
+            <!-- Payment History -->
+            <StackPanel Grid.Column="2">
+                <TextBlock Text="Istorija plaćanja:" FontWeight="Bold" Margin="0,0,0,5"/>
+                <DataGrid ItemsSource="{Binding PaymentHistory}"
+                          AutoGenerateColumns="False"
+                          Height="200"
+                          IsReadOnly="True"
+                          ScrollViewer.VerticalScrollBarVisibility="Auto"
+                          CanUserAddRows="False">
+                    <DataGrid.Columns>
+                        
+                        <DataGridTextColumn Header="Datum" Binding="{Binding PaymentDate}" Width="*"/>
+                        <DataGridTemplateColumn Header="">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Ellipse Width="16" Height="16" 
+                                         Fill="{Binding IsPaid, Converter={StaticResource BoolToColorConverter}}" 
+                                         Stroke="Black" StrokeThickness="1"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </StackPanel>
+        </Grid>
     </Grid>
-
 </Window>

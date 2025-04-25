@@ -17,7 +17,7 @@ namespace GymApp.ViewModel
     public class MainWindowViewModel : INotifyPropertyChanged
     {
         private readonly IUserRepository _userRepository;
-        public ObservableCollection<User> Members { get; set; } = new ObservableCollection<User>();
+        public static ObservableCollection<User> Members { get; set; } = new ObservableCollection<User>();
         public ObservableCollection<User> _filteredMembers { get; set; } = new ObservableCollection<User>();
      
         #region Properties
@@ -37,6 +37,7 @@ namespace GymApp.ViewModel
         public ICommand ExtendCommand { get; }
         public ICommand DetailsCommand { get; }
         #endregion
+        public Action CloseMain;
         public Action OpenAddMemberWindow;
         public Action<object> OpenDetailsWindow;
         public MainWindowViewModel(string username, IUserRepository userRepository)
@@ -52,8 +53,7 @@ namespace GymApp.ViewModel
 
         private void Logout()
         {
-            // close this window and open login again, or shutdown app
-            MessageBox.Show("log out");
+            CloseMain?.Invoke();
         }
 
         private void SearchMember()
@@ -154,6 +154,7 @@ namespace GymApp.ViewModel
         private void AddNewMember()
         {
             OpenAddMemberWindow?.Invoke();
+            
         }
 
         private void RenewMembership(object id)
@@ -185,7 +186,7 @@ namespace GymApp.ViewModel
             int Id = Convert.ToInt32(id);
             OpenDetailsWindow?.Invoke(id);    
         }
-        private void FillOutOutputList(List<User> list) 
+        public static void FillOutOutputList(List<User> list) 
         {
             Members.Clear();
             foreach (var item in list)
