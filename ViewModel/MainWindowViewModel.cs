@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Dynamic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -18,7 +19,9 @@ namespace GymApp.ViewModel
     public class MainWindowViewModel : INotifyPropertyChanged
     {
         private readonly IUserRepository _userRepository;
-        private readonly GoogleDriveUploader _googleDriveUploader;
+        private readonly INotesRepository _notesRepository;
+        private readonly IPaymentHistoryRepository _paymentHistoryRepository;
+      
         public static ObservableCollection<User> Members { get; set; } = new ObservableCollection<User>();
         public ObservableCollection<User> _filteredMembers { get; set; } = new ObservableCollection<User>();
      
@@ -38,21 +41,31 @@ namespace GymApp.ViewModel
         public ICommand AddNewMemberCommand {  get; }
         public ICommand ExtendCommand { get; }
         public ICommand DetailsCommand { get; }
+        public ICommand DeleteCommand { get; }
+        public ICommand OpenDeleteConfirmationCommand { get; }
+     
         #endregion
         public Action CloseMain;
+        public Action CloseConfirmPage;
         public Action OpenAddMemberWindow;
         public Action<object> OpenDetailsWindow;
-        public MainWindowViewModel(string username, IUserRepository userRepository)
+        public Action<object> OpenConfirmationPage;
+       
+        public MainWindowViewModel(string username, IUserRepository userRepository, INotesRepository notesRepository, IPaymentHistoryRepository paymentHistoryRepository)
         {
-            LoggedInUsername = $"Welcome, {username}";
+            LoggedInUsername = $"Trener - {username}";
             _userRepository = userRepository;
+            _notesRepository = notesRepository;
+            _paymentHistoryRepository = paymentHistoryRepository;
             FillOutOutputList(_userRepository.GetAll());
             LogoutCommand = new RelayCommand(Logout);
             AddNewMemberCommand = new RelayCommand(AddNewMember);
             ExtendCommand = new RelayCommand(id => RenewMembership(id));
             DetailsCommand = new RelayCommand(id => OpenDetails(id));
-           // _googleDriveUploader = new GoogleDriveUploader();
-          
+            
+            OpenDeleteConfirmationCommand = new RelayCommand(id => OpenConfirmDeletePage(id));
+            //DeleteCommand = new RelayCommand(id => DeleteMember(id));
+
         }
 
         private void Logout()
@@ -161,18 +174,26 @@ namespace GymApp.ViewModel
             
         }
 
+        private void OpenConfirmDeletePage(object id)
+        {
+            OpenConfirmationPage?.Invoke(id);
+        }
         private void RenewMembership(object id)
         {
             int Id = Convert.ToInt32(id);
+
             try
             {
-                var member = _userRepository.GetAll().FirstOrDefault(x => x.Id == Id);
+                var member = _userRepository.Get(Id);
+                var payments = _paymentHistoryRepository.Get(Id);
                 member.IsMembershipPaid = true;
                 member.PaymentDate = DateTime.Now;
                 member.ExpiryDate = DateTime.Now.AddDays(30);
 
                 _userRepository.Update(member);
+                _paymentHistoryRepository.Add(payments);
                 FillOutOutputList(_userRepository.GetAll());
+                CloseConfirmPage?.Invoke();
             }
             catch (Exception e)
             {
@@ -185,6 +206,7 @@ namespace GymApp.ViewModel
 
         }
 
+         
         private void OpenDetails(object id)
         {
             int Id = Convert.ToInt32(id);

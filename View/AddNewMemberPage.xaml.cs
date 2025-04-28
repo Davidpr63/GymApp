@@ -86,5 +86,12 @@ namespace GymApp.View
                 EmailTextBox.Foreground = Brushes.Gray;
             }
         }
+
+        private void ButtonClose_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
+
+      
     }
 }

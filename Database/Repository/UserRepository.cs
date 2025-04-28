@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media.TextFormatting;
 
 namespace GymApp.Database.Repository
 {
@@ -17,8 +18,10 @@ namespace GymApp.Database.Repository
 
         public override void Add(User entity)
         {
-            var last = GetAll().LastOrDefault();
-            entity.Id = ++last.Id;
+            if (GetAll().Count == 0)
+                entity.Id = 1;
+            entity.Id = ++GetAll().LastOrDefault().Id;
+            
             base.Add(entity);
         }
 
@@ -33,13 +36,25 @@ namespace GymApp.Database.Repository
 
         public bool Authenticate(string usename, string password)
         {
-            return GetAll().Any(x => x.Username.Equals(usename) && x.Password.Equals(password));
+            var list = GetAll().Where(x => x.TypeUser == TypeUser.Trainer).ToList();
+            
+            
+            return list.Any(x => x.Username.Equals(usename) && x.Password.Equals(password));
         }
 
         public override User Get(int id)
         {
             return GetAll().FirstOrDefault(x => x.Id == id);
             //return base.Get(id);
+        }
+
+        public override void Delete(User entity)
+        {
+            var list = GetAll();
+            list.RemoveAll(x => x.Id == entity.Id);
+            SaveAll(list);
+
+            //base.Delete(entity);
         }
     }
 }

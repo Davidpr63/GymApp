@@ -1,6 +1,7 @@
 ﻿using GymApp.Database.IRepository;
 using GymApp.Database.Repository;
 using GymApp.GoogleDrive;
+using GymApp.Model;
 using GymApp.View;
 using GymApp.ViewModel;
 using System;
@@ -29,9 +30,8 @@ namespace GymApp
     public partial class MainWindow : Window
     {
         private readonly MainWindowViewModel _viewModel;
-        
-        private readonly INotesRepository _notesRepository;
-        private readonly IPaymentHistoryRepository _paymentHistoryRepository;
+        private LoginPage logIn = new LoginPage();
+
         private readonly IGoogleDriveUploader _googleDriveUploader;
         private string filePathUsers = ConfigurationManager.AppSettings["DatabaseFilePath"] + "/Users.json";
         private string filePathNotes = ConfigurationManager.AppSettings["DatabaseFilePath"] + "/Notes.json";
@@ -42,44 +42,43 @@ namespace GymApp
         private string _notesNewHash;
         private string _historyOldHash;
         private string _historyNewHash;
-        public MainWindow(string username, IUserRepository userRepository)
+        public MainWindow(User trainer, IUserRepository userRepository, INotesRepository notesRepository, IPaymentHistoryRepository paymentHistoryRepository)
         {
             InitializeComponent();
-            _notesRepository = new NotesRepository(filePathNotes);
-            _paymentHistoryRepository = new PaymentHistoryRepository(filePathPaymentHistory);
+           
             _googleDriveUploader = new GoogleDriveUploader();
-            _viewModel = new MainWindowViewModel(username, userRepository);
+            _viewModel = new MainWindowViewModel(trainer.Firstname, userRepository, notesRepository, paymentHistoryRepository);
             _usersOldHash = GetFileHash(filePathUsers);
             _notesOldHash = GetFileHash(filePathNotes);
             _historyOldHash = GetFileHash(filePathPaymentHistory);
             _viewModel.OpenAddMemberWindow = () =>
             {
-                var addNewMemberWindow = new AddNewMemberPage(userRepository, _notesRepository, _paymentHistoryRepository);
+                var addNewMemberWindow = new AddNewMemberPage(userRepository, notesRepository, paymentHistoryRepository);
                 addNewMemberWindow.Show();
             };
             _viewModel.OpenDetailsWindow = (object id) =>
             {
-                var detailsWindow = new DetailsPage(id, userRepository, _notesRepository, _paymentHistoryRepository);
+                var detailsWindow = new DetailsPage(id, userRepository, notesRepository, paymentHistoryRepository);
                 detailsWindow.Show();
             };
             _viewModel.CloseMain = () =>
             {
                 
-                var logIn = new LoginPage();
+                
                 logIn.Show();
                 this.Close();
-                _usersNewHash = GetFileHash(filePathUsers);
-                _notesNewHash = GetFileHash(filePathNotes);
-                _historyNewHash = GetFileHash(filePathPaymentHistory);
-                if (!_usersOldHash.Equals(_usersNewHash))
-                    _googleDriveUploader.UploadFile("Users.json");
-                if (!_notesOldHash.Equals(_notesNewHash))
-                    _googleDriveUploader.UploadFile("Notes.json");
-                if (!_historyOldHash.Equals(_historyNewHash))
-                    _googleDriveUploader.UploadFile("Payment history.json");
+                //CheckDatabase();
 
             };
+            _viewModel.OpenConfirmationPage = (object id) =>
+            {
+                int Id = Convert.ToInt32(id);
+                var confirmWindow = new Confirmation(Id ,userRepository, notesRepository, paymentHistoryRepository);
+                confirmWindow.Show();
+            };
+
             
+
             this.DataContext = _viewModel; 
         }
         public string GetFileHash(string filePath)
@@ -109,6 +108,18 @@ namespace GymApp
             }
         }
 
+        /*private async void CheckDatabase()
+        {
+            _usersNewHash = GetFileHash(filePathUsers);
+            _notesNewHash = GetFileHash(filePathNotes);
+            _historyNewHash = GetFileHash(filePathPaymentHistory);
+            if (!_usersOldHash.Equals(_usersNewHash))
+                await _googleDriveUploader.UploadFile("Users.json");
+            if (!_notesOldHash.Equals(_notesNewHash))
+                await _googleDriveUploader.UploadFile("Notes.json");
+            if (!_historyOldHash.Equals(_historyNewHash))
+                await _googleDriveUploader.UploadFile("Payment history.json");
+        }*/
         private void Search_SelectionChanged(object sender, RoutedEventArgs e)
         {
 

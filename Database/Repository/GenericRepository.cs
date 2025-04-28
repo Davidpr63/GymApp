@@ -37,11 +37,12 @@ namespace GymApp.Database.Repository
             SaveAll(list);
         }
 
-        public void Delete(int id)
+        public virtual void Delete(T entity)
         {
             var list = GetAll();
-            var entity = list.FirstOrDefault(x => x.Equals(id));
+            
             list.Remove(entity);
+            SaveAll(list);
         }
 
         public virtual T Get(int id)

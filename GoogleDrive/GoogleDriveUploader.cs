@@ -28,7 +28,7 @@ namespace GymApp.GoogleDrive
         }
 
      
-        public async Task UploadFile(string filename)
+        public void UploadFile(string filename)
         {
             GoogleCredential credential;
             using (var stream = new FileStream(credentialsPath, FileMode.Open, FileAccess.Read))
@@ -59,7 +59,7 @@ namespace GymApp.GoogleDrive
             {
                 request = service.Files.Update(fileMetadata, fileId, stream, "application/json");
                 request.Fields = "id";  
-                await request.UploadAsync();  
+                request.Upload();  
             }
 
             var uploadedFile = request.ResponseBody;

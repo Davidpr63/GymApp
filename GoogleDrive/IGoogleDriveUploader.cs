@@ -10,6 +10,6 @@ namespace GymApp.GoogleDrive
 {
     public interface IGoogleDriveUploader
     {
-        Task UploadFile(string filename);
+        void UploadFile(string filename);
     }
 }

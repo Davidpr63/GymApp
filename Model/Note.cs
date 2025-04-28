@@ -11,6 +11,7 @@ namespace GymApp.Model
         public int Id { get; set; }
         public string Notes { get; set; }
 
+        public int MemberId { get; set; }
         public Note()
         {
             

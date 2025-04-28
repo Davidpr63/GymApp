@@ -10,7 +10,9 @@ namespace GymApp.Model
     {
         public int Id { get; set; }
         public bool IsPaid { get; set; }
-        public string PaymentDate { get; set; }
+        public DateTime PaymentDate { get; set; }
+
+        public int MemberId { get; set; }
         public PaymentHistory()
         {
             

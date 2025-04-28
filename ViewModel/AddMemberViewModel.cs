@@ -58,13 +58,13 @@ namespace GymApp.ViewModel
                     ExpiryDate = DateTime.Now.AddDays(30),
                 };
                 _userRepository.Add(newMember);
-                Note note = new Note() { Id = newMember.Id, Notes = "Unesite beleske..." };
+                Note note = new Note() { MemberId = newMember.Id, Notes = "Unesite beleske..." };
                 _notesRepository.Add(note);
                 PaymentHistory paymentHistory = new PaymentHistory()
                 {
-                    Id = newMember.Id,
+                    MemberId = newMember.Id,
                     IsPaid = true,
-                    PaymentDate = DateTime.Now.ToString("dd.mm.yyyy")
+                    PaymentDate = DateTime.Now
                 };
                 _paymentHistoryRepository.Add(paymentHistory);
                 MessageBox.Show("Novi clan je uspesno dodat",

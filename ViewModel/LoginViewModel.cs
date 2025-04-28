@@ -17,9 +17,9 @@ namespace GymApp.ViewModel
     public class LoginViewModel : INotifyPropertyChanged
     {
         private readonly IUserRepository _userRepository;
-        public Action LoginSuccess { get; set; }
+        public Action<object> LoginSuccess { get; set; }
         #region Properties
-        private string _username;
+        private string _username = "Unesite korisničko ime...";
         public string Username { get => _username; set { _username = value; OnPropertyChanged(); } }
         private string _password;
         public string Password { get => _password; set { _password = value; OnPropertyChanged(); } }
@@ -41,13 +41,14 @@ namespace GymApp.ViewModel
         private void Login() 
         {
             
-            bool IsValid = LoginIsValid(); 
+            bool IsValid = LoginIsValid();
+            object trainer = _userRepository.GetAll().FirstOrDefault(x => x.Username == Username);
             if (IsValid)
             {
-                LoginSuccess?.Invoke();
+                LoginSuccess?.Invoke(trainer);
             }
             else
-                PasswordError = "Invalid username or password";
+                PasswordError = "Pogrešno korisničko ime ili lozinka";
             
         }
         private bool LoginIsValid()

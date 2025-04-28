@@ -5,121 +5,197 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GymApp"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Window.Resources>
-       
+        WindowStartupLocation="CenterScreen"
+        Title="GymApp"
+        Width="900" Height="600"
+        Background="#fafafa"
+        >
         
-    </Window.Resources>
-    <Grid>
-        <StackPanel>
-            <Grid Background="#f0f0f0" Height="50" VerticalAlignment="Top">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
 
-                <!-- Logged-in username -->
-                <TextBlock Text="{Binding LoggedInUsername}" 
-               VerticalAlignment="Center" Margin="10,0"
-               FontWeight="Bold" FontSize="16"/>
+    <Grid Background="Transparent">
+        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <!-- Top Bar -->
+            <RowDefinition Height="Auto"/>
+            <!-- Controls -->
+            <RowDefinition Height="*"/>
+            <!-- Data Grid -->
+        </Grid.RowDefinitions>
 
-                <!-- Log out button -->
-                <Button Content="Log Out"
+        <!-- Top Bar -->
+        <Grid Background="Gray" Height="60" VerticalAlignment="Top" Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <Image Source="Assets/TreningCentar.png" 
+               Height="70" 
+               Width="70"
+               Margin="12,3,0,0" 
+               VerticalAlignment="Top" 
+               HorizontalAlignment="Left"
+               />
+            <TextBlock Text="{Binding LoggedInUsername}" 
+                       VerticalAlignment="Top" 
+                       Margin="87,16,21,0" 
+                       FontWeight="Bold" 
+                       FontSize="18" 
+                       Foreground="White"
+                       />
+
+            <Button Content="Odjavi se"
                     Command="{Binding LogoutCommand}"
-                    Margin="0,0,10,0" Width="100" Height="30"
+                    Margin="0,0,20,0"
+                    Width="120" Height="35"
+                    Background="Red" 
+                    Foreground="White"
+                    BorderThickness="0"
+                    FontWeight="SemiBold"
+                    Cursor="Hand"
                     VerticalAlignment="Center"
+                    HorizontalAlignment="Right"
                     Grid.Column="1" />
+        </Grid>
 
-            </Grid>
-            <Grid Background="#f0f0f0" Height="50" VerticalAlignment="Top">
-                <StackPanel HorizontalAlignment="Left" VerticalAlignment="Center" Orientation="Horizontal">
-                    <Button 
-                        Content="Dodaj novog clana"
-                        VerticalAlignment="Center"  
-                        Height="40"
-                        Width="auto"
-                        Margin="10 0 10 0"
-                        Command="{Binding AddNewMemberCommand}"
-                    />
-                    <CheckBox
-                        Content="Aktivni clanovi"
-                        VerticalAlignment="Center"
-                        Margin="10"
-                        IsChecked="{Binding ActiveMembersIsChecked}"
-                    />
-                    <CheckBox
-                        Content="Aktivni(Nisu platili)"
-                        VerticalAlignment="Center"
-                        Margin="10"
-                        IsChecked="{Binding ActiveMembersNotPaidIsChecked}"
-                    />
-                    <TextBlock
-                        Text="Pronadji clana(ID):"
-                        VerticalAlignment="Center"
-                        Margin="10"
-                    />
-                    <TextBox x:Name="SearchTB" 
-                        Width="150"
-                        Height="20"
-                        Margin="10"
-                        GotFocus="Search_GotFocus"
-                        LostFocus="Search_LostFocus"
-                        Text="{Binding SearchId, UpdateSourceTrigger=PropertyChanged}"
-                        SelectionChanged="Search_SelectionChanged"
-                        Foreground="Gray"
-                    />
-                </StackPanel>
-            </Grid>
-            <!-- Table -->
-            <DataGrid ItemsSource="{Binding Members}" 
-              AutoGenerateColumns="False" 
-              Margin="10,0,10,30"
-              HeadersVisibility="Column"
-              CanUserAddRows="False"
-              IsReadOnly="True">    
+        <!-- Controls -->
+        <Grid Background="LightGray" Height="70" VerticalAlignment="Top" Grid.Row="1">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Button 
+                    Content="Dodaj novog člana"
+                    Command="{Binding AddNewMemberCommand}"
+                    Height="40"
+                    Width="150"
+                    Background="DodgerBlue"
+                    Foreground="White"
+                    BorderThickness="0"
+                    FontWeight="SemiBold"
+                    Cursor="Hand"
+                    Margin="10 0 0 0"
+                />
+                <CheckBox
+                    Content="Aktivni članovi"
+                    VerticalAlignment="Center"
+                    IsChecked="{Binding ActiveMembersIsChecked}" 
+                    Margin="10 0 0 0"/>
 
-                <DataGrid.Columns>
-                    <DataGridTextColumn Header="First Name" Binding="{Binding Firstname}" />
-                    <DataGridTextColumn Header="Last Name" Binding="{Binding Lastname}" />
+                <CheckBox
+                    Content="Nisu platili"
+                    VerticalAlignment="Center"
+                    IsChecked="{Binding ActiveMembersNotPaidIsChecked}"
+                    Margin="10 0 0 0"/>
 
-                    <!-- Colored circle column -->
-                    <DataGridTemplateColumn Header="Active">
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <Ellipse Width="16" Height="16" 
-                             Fill="{Binding IsMembershipPaid, Converter={StaticResource BoolToColorConverter}}" 
-                             Stroke="Black" StrokeThickness="1"/>
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
-                    <!--Extend button-->
-                    <DataGridTemplateColumn>
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <Button Content="Obnovi"
-                Command="{Binding DataContext.ExtendCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
-                CommandParameter="{Binding Id}" />
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
-                    <!-- Details button -->
-                    <DataGridTemplateColumn >
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <Button Content="Details" Command="{Binding DataContext.DetailsCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
-                            CommandParameter="{Binding Id}" />
+                <TextBlock
+                    Text="Pronađi člana (ID):"
+                    VerticalAlignment="Center" 
+                    FontWeight="SemiBold" 
+                    Margin="10 0 0 0"/>
 
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
-
-                </DataGrid.Columns>
-            </DataGrid>
-        </StackPanel>
-        <!-- Top bar -->
+                <TextBox 
+                    x:Name="SearchTB" 
+                    Width="150"
+                    Height="30"
+                    Text="{Binding SearchId, UpdateSourceTrigger=PropertyChanged}"
+                    Foreground="Gray"
+                    Margin="5,0"
+                    GotFocus="Search_GotFocus"
+                    LostFocus="Search_LostFocus"
+                    VerticalContentAlignment="Center"
+                    SelectionChanged="Search_SelectionChanged"/>
+            </StackPanel>
+        </Grid>
         
+        <!-- Data Grid -->
+        <DataGrid ItemsSource="{Binding Members}" 
+                  AutoGenerateColumns="False" 
+                  Grid.Row="2"
+                  Margin="20"
+                  HeadersVisibility="Column"
+                  CanUserAddRows="False"
+                  IsReadOnly="True"
+                  RowBackground="White"
+                  AlternatingRowBackground="#f5f5f5"
+                  BorderThickness="0"
+                  GridLinesVisibility="None"
+                  HorizontalAlignment="Stretch"
+                  VerticalAlignment="Stretch"
+                  VerticalScrollBarVisibility="Auto">
+            
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Ime" Width="*" Binding="{Binding Firstname}" />
+                <DataGridTextColumn Header="Prezime" Width="*" Binding="{Binding Lastname}" />
 
-        
+                <!-- Active Status -->
+                <DataGridTemplateColumn Header="Status" Width="50">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Ellipse Width="16" Height="16"
+                                     Fill="{Binding IsMembershipPaid, Converter={StaticResource BoolToColorConverter}}"
+                                     Stroke="Black"
+                                     StrokeThickness="1" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <!-- Extend Membership Button -->
+                <DataGridTemplateColumn Width="*">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Content="Obnovi"
+                                    Command="{Binding DataContext.ExtendCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                    CommandParameter="{Binding Id}"
+                                    Background="ForestGreen"
+                                    Foreground="White"
+                                    BorderThickness="0"
+                                    Height="30"
+                                    Width="80"
+                                    Cursor="Hand"
+                                    Margin="10 0 0 0"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <!-- Details Button -->
+                <DataGridTemplateColumn Width="*">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Content="Podaci o članu"
+                                    Command="{Binding DataContext.DetailsCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                    CommandParameter="{Binding Id}"
+                                    Background="Silver"     
+                                    Foreground="White"
+                                    BorderThickness="0"
+                                    Height="30"
+                                    Width="90"
+                                    Margin="10 0 0 0"
+                                    Cursor="Hand"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <!-- Delete Button -->
+                <DataGridTemplateColumn Width="50">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Content="🗑️"
+                                    FontSize="16"
+                                    Background="Red"
+                                    Foreground="White"
+                                    BorderThickness="0"
+                                    Command="{Binding DataContext.OpenDeleteConfirmationCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                    CommandParameter="{Binding Id}"
+                                    ToolTip="Obriši člana"
+                                    Width="40"
+                                    Height="40"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+            </DataGrid.Columns>
+        </DataGrid>
+
     </Grid>
 </Window>

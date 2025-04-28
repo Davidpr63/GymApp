@@ -17,8 +17,20 @@ namespace GymApp.Database.Repository
 
         public override Note Get(int id)
         {
-            return GetAll().FirstOrDefault(x => x.Id == id);
+            return GetAll().FirstOrDefault(x => x.MemberId == id);
             //return base.Get(id);
+        }
+
+        public override void Add(Note entity)
+        {
+            var list = GetAll();
+            if (list.Count == 0)
+            {
+                entity.Id = 1;
+            }
+            else
+                entity.Id = ++list.LastOrDefault().Id; 
+            base.Add(entity);
         }
 
         public override void Update(Note entity)
@@ -36,6 +48,13 @@ namespace GymApp.Database.Repository
                 SaveAll(list);
             }
             
+        }
+
+        public override void Delete(Note entity)
+        {
+            var list = GetAll();
+            list.RemoveAll(x => x.Id == entity.Id);
+            SaveAll(list);
         }
     }
 }
