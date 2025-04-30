@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media.TextFormatting;
@@ -37,11 +38,25 @@ namespace GymApp.Database.Repository
         public bool Authenticate(string usename, string password)
         {
             var list = GetAll().Where(x => x.TypeUser == TypeUser.Trainer).ToList();
-            
-            
-            return list.Any(x => x.Username.Equals(usename) && x.Password.Equals(password));
+            var Admin = list.FirstOrDefault(x => x.Username.Equals(usename));
+            string storedsalt = "";
+            if (Admin != null)
+            {
+                storedsalt = Admin.Salt;
+                return VerifyPassword(password, Admin.Password, storedsalt);
+            }
+            return false;
+            //return list.Any(x => x.Username.Equals(usename) && x.Password.Equals(password));
         }
 
+        public bool VerifyPassword(string password, string storedHash, string storedSalt)
+        {
+            byte[] saltBytes = Convert.FromBase64String(storedSalt);
+            var pbkdf2 = new Rfc2898DeriveBytes(password, saltBytes, 100_000, HashAlgorithmName.SHA256);
+            byte[] hash = pbkdf2.GetBytes(32);
+
+            return Convert.ToBase64String(hash) == storedHash;
+        }
         public override User Get(int id)
         {
             return GetAll().FirstOrDefault(x => x.Id == id);

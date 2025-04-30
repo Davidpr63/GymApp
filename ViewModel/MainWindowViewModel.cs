@@ -27,12 +27,14 @@ namespace GymApp.ViewModel
      
         #region Properties
         public string LoggedInUsername { get; set; }
-        private string _searchId = "Unesite ID clana...";
+        private string _searchId = "Unesite ID člana...";
         public string SearchId { get => _searchId; set { _searchId = value; OnPropertyChanged(); SearchMember(); } }
         private bool _activeMembersIsChecked;
         public bool ActiveMembersIsChecked { get => _activeMembersIsChecked; set { _activeMembersIsChecked = value; CheckBoxs(); OnPropertyChanged(); } }
         private bool _activeMembersNotPaidIsChecked;
         public bool ActiveMembersNotPaidIsChecked { get => _activeMembersNotPaidIsChecked; set { _activeMembersNotPaidIsChecked = value; CheckBoxs(); OnPropertyChanged(); } }
+        private bool _haveNoteIsChecked;
+        public bool HaveNotesIsChecked { get => _haveNoteIsChecked; set { _haveNoteIsChecked = value; CheckBoxs(); OnPropertyChanged(); } }
 
         #endregion
 
@@ -88,13 +90,13 @@ namespace GymApp.ViewModel
                     FillOutOutputList(listOfFilterMember);
 
                 }
-                else if (!string.IsNullOrEmpty(SearchId))
+                if(string.IsNullOrEmpty(SearchId) || !SearchId.Equals("Unesite ID člana..."))
+                    FillOutOutputList(_userRepository.GetAll());
+                else
                 {
                     FillOutOutputList(_userRepository.GetAll());
                     MessageBox.Show("ID mora biti broj");
                 }
-                else
-                    FillOutOutputList(_userRepository.GetAll());
             }
             catch (Exception e)
             {
@@ -110,23 +112,36 @@ namespace GymApp.ViewModel
         }
         private void CheckBoxs()
         {
-            if (ActiveMembersIsChecked && !ActiveMembersNotPaidIsChecked)
+            if (ActiveMembersIsChecked && !ActiveMembersNotPaidIsChecked && !HaveNotesIsChecked)
             {
                 ActiveMembers();
             }
-            if (!ActiveMembersIsChecked && ActiveMembersNotPaidIsChecked)
+            if (!ActiveMembersIsChecked && ActiveMembersNotPaidIsChecked && !HaveNotesIsChecked)
             {
                 ActiveNotPaidMembers();
             }
-            if (!ActiveMembersIsChecked && !ActiveMembersNotPaidIsChecked)
+            if (!ActiveMembersIsChecked && !ActiveMembersNotPaidIsChecked && HaveNotesIsChecked)
+            {
+                HaveNoteMembers();
+            }
+            if (!ActiveMembersIsChecked && !ActiveMembersNotPaidIsChecked && !HaveNotesIsChecked)
             {
                 FillOutOutputList(_userRepository.GetAll());
             }
-            if (ActiveMembersIsChecked && ActiveMembersNotPaidIsChecked)
+            if (ActiveMembersIsChecked && HaveNotesIsChecked && !ActiveMembersNotPaidIsChecked)
+            {
+                ActiveMembersWithNotes();
+            }
+            if (!ActiveMembersIsChecked && HaveNotesIsChecked && ActiveMembersNotPaidIsChecked)
+            {
+                NonActiveMembersWithNotes();
+            }
+            if (ActiveMembersIsChecked && ActiveMembersNotPaidIsChecked && HaveNotesIsChecked)
             {
                 ActiveMembersIsChecked = false;
                 ActiveMembersNotPaidIsChecked = false;
-                MessageBox.Show("Cekirajte jednu opciju",
+                HaveNotesIsChecked = false;
+                MessageBox.Show("Ne mogu sve opcije biti čekirane",
                        "Greška",
                        MessageBoxButton.OK,
                        MessageBoxImage.Error);
@@ -168,6 +183,57 @@ namespace GymApp.ViewModel
             }
         }
 
+        private void HaveNoteMembers()
+        {
+            List<User> filteredMembers = new List<User>();
+            try
+            {
+                filteredMembers = _userRepository.GetAll().Where(x => x.HaveNote == true).ToList();
+                FillOutOutputList(filteredMembers);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("An error occurred while filtering  members who have notes: " + e.Message,
+                       "Error",
+                       MessageBoxButton.OK,
+                       MessageBoxImage.Error);
+                throw;
+            }
+        }
+        private void ActiveMembersWithNotes()
+        {
+            List<User> filteredMembers = new List<User>();
+            try
+            {
+                filteredMembers = _userRepository.GetAll().Where(x =>x.IsMembershipPaid == true && x.HaveNote == true).ToList();
+                FillOutOutputList(filteredMembers);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("An error occurred while filtering  members who are active and have notes: " + e.Message,
+                       "Error",
+                       MessageBoxButton.OK,
+                       MessageBoxImage.Error);
+                throw;
+            }
+        }
+        private void NonActiveMembersWithNotes()
+        {
+            List<User> filteredMembers = new List<User>();
+            try
+            {
+                filteredMembers = _userRepository.GetAll().Where(x => x.IsMembershipPaid == false && x.HaveNote == true).ToList();
+                FillOutOutputList(filteredMembers);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("An error occurred while filtering  members who aren't active and have notes: " + e.Message,
+                       "Error",
+                       MessageBoxButton.OK,
+                       MessageBoxImage.Error);
+                throw;
+            }
+        }
         private void AddNewMember()
         {
             OpenAddMemberWindow?.Invoke();
@@ -185,7 +251,16 @@ namespace GymApp.ViewModel
             try
             {
                 var member = _userRepository.Get(Id);
+                if (member.TypeUser == TypeUser.Trainer)
+                {
+                    MessageBox.Show($"{member.Firstname} je trener, nema potrebe za obnavljanjem :)!",
+                                       "",
+                                       MessageBoxButton.OK,
+                                       MessageBoxImage.Information);
+                    return;
+                }
                 var payments = _paymentHistoryRepository.Get(Id);
+                
                 member.IsMembershipPaid = true;
                 member.PaymentDate = DateTime.Now;
                 member.ExpiryDate = DateTime.Now.AddDays(30);
@@ -193,6 +268,11 @@ namespace GymApp.ViewModel
                 _userRepository.Update(member);
                 _paymentHistoryRepository.Add(payments);
                 FillOutOutputList(_userRepository.GetAll());
+                MessageBox.Show($"Uspesno obnovljena clanarina članu -> {member.Firstname + " " + member.Lastname}",
+                                        "",
+                                        MessageBoxButton.OK,
+                                        MessageBoxImage.Information);
+                 
                 CloseConfirmPage?.Invoke();
             }
             catch (Exception e)

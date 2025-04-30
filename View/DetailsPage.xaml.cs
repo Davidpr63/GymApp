@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -37,9 +38,11 @@ namespace GymApp.View
             {
                 this.Close();
             };
+            
             DataContext = _viewModel;
         }
 
+        
         private void TextBox_GotFocus(object sender, RoutedEventArgs e)
         {
             if (Notes.Text.Equals("Unesite beleske..."))
@@ -57,6 +60,43 @@ namespace GymApp.View
                 Notes.Text = "Unesite beleske...";
             }
             Notes.Foreground = Brushes.Gray;
+        }
+
+        private void NewPasswordTB_GotFocus(object sender, RoutedEventArgs e)
+        {
+            if (NewPasswordTB.Text.Equals("Nova lozinka..."))
+            {
+                NewPasswordTB.Text = "";
+                NewPasswordTB.Foreground = Brushes.Black;
+            }
+           
+        }
+
+        private void NewPasswordTB_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (string.IsNullOrEmpty(NewPasswordTB.Text))
+            {
+                NewPasswordTB.Text = "Nova lozinka...";
+            }
+            
+        }
+
+        private void EmailTB_GotFocus(object sender, RoutedEventArgs e)
+        {
+            if (EmailTB.Text.Equals("Unesite email..."))
+            {
+                EmailTB.Text = "";
+                EmailTB.Foreground = Brushes.Black;
+            }
+        }
+
+        private void EmailTB_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (string.IsNullOrEmpty(EmailTB.Text))
+            {
+                EmailTB.Text = "Unesite email...";
+            }
+            EmailTB.Foreground = Brushes.Gray;
         }
     }
 }

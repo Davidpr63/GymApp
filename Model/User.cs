@@ -16,9 +16,11 @@ namespace GymApp.Model
 
         public string Username {  get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty ;
+        public string Salt { get; set; } = string.Empty ;
         public string Email { get; set; }  
         
         public bool IsMembershipPaid { get; set; }
+        public bool HaveNote { get; set; }
         public DateTime PaymentDate { get; set; }
         public DateTime ExpiryDate { get; set; }
 

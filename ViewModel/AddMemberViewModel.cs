@@ -20,7 +20,7 @@ namespace GymApp.ViewModel
         public string FirstName { get => _firstname; set { _firstname = value; OnPropertyChanged(); } }
         private string _lastname = "Unesite prezime...";
         public string LastName { get => _lastname; set { _lastname = value; OnPropertyChanged(); } }
-        private string _email = "Unesite email...";
+        private string _email = "Unesite email...(opciono)";
         public string Email { get => _email; set { _email = value; OnPropertyChanged(); } }
         private string _errorMessage;
         public string ErrorMessage { get => _errorMessage; set { _errorMessage = value; OnPropertyChanged(); } }
@@ -67,7 +67,7 @@ namespace GymApp.ViewModel
                     PaymentDate = DateTime.Now
                 };
                 _paymentHistoryRepository.Add(paymentHistory);
-                MessageBox.Show("Novi clan je uspesno dodat",
+                MessageBox.Show($"Novi clan je uspesno dodat!\nNjegov ID : {newMember.Id}",
                     "Uspesno",
                     MessageBoxButton.OK,
                     MessageBoxImage.Information

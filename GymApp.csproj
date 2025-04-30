@@ -105,6 +105,7 @@
     </ApplicationDefinition>
     <Compile Include="Common\RelayCommand.cs" />
     <Compile Include="Converter\BoolToColorConverter.cs" />
+    <Compile Include="Converter\BoolToColorNoteConverter.cs" />
     <Compile Include="Converter\NullToVisibilityConverter.cs" />
     <Compile Include="Database\IRepository\IGenericRepository.cs" />
     <Compile Include="Database\IRepository\INotesRepository.cs" />

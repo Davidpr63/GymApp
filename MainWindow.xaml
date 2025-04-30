@@ -4,14 +4,17 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GymApp"
+        xmlns:noteConvert="clr-namespace:GymApp.Converter"
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen"
         Title="GymApp"
         Width="900" Height="600"
         Background="#fafafa"
         >
-        
 
+    <Window.Resources>
+        <noteConvert:BoolToColorNoteConverter x:Key="BoolToColorNoteConverter"/>
+    </Window.Resources>
     <Grid Background="Transparent">
         
         <Grid.RowDefinitions>
@@ -85,6 +88,11 @@
                     VerticalAlignment="Center"
                     IsChecked="{Binding ActiveMembersNotPaidIsChecked}"
                     Margin="10 0 0 0"/>
+                <CheckBox
+                    Content="Imaju beleške"
+                    VerticalAlignment="Center"
+                    IsChecked="{Binding HaveNotesIsChecked}"
+                    Margin="10 0 0 0"/>     
 
                 <TextBlock
                     Text="Pronađi člana (ID):"
@@ -134,6 +142,16 @@
                                      Fill="{Binding IsMembershipPaid, Converter={StaticResource BoolToColorConverter}}"
                                      Stroke="Black"
                                      StrokeThickness="1" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="Beleske" Width="50">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Ellipse Width="16" Height="16"
+                                      Fill="{Binding HaveNote, Converter={StaticResource BoolToColorNoteConverter}}"
+                                      Stroke="Black"
+                                      StrokeThickness="1" />        
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>

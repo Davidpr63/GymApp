@@ -55,7 +55,7 @@ namespace GymApp.View
                 _paymentHistoryRepository.Delete(payments);
                 MainWindowViewModel.FillOutOutputList(_userRepository.GetAll());
                 this.Close();
-                MessageBox.Show($"Uspesno ste obrisali {member.Firstname} {member.Lastname}",
+                MessageBox.Show($"Uspesno ste obrisali člana -> {member.Firstname} {member.Lastname}",
                        "Error",
                        MessageBoxButton.OK,
                        MessageBoxImage.Information);
