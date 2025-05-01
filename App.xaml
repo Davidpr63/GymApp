@@ -6,6 +6,6 @@
 
     <Application.Resources>
         <local:BoolToColorConverter x:Key="BoolToColorConverter"/>
-        
+      
     </Application.Resources>
 </Application>

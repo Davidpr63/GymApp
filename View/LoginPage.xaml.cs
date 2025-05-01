@@ -12,6 +12,7 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -30,6 +31,8 @@ namespace GymApp.View
     public partial class LoginPage : Window
     {
         private readonly LoginViewModel _viewModel;
+        private readonly GoogleDriveUploading _googleDriveUploadingPage;
+        private  GoogleDriveUploadingViewModel _googleDriveUploadingViewModel;
         private readonly IUserRepository _userRepository;
         private readonly INotesRepository _notesRepository;
         private readonly IPaymentHistoryRepository _paymentHistoryRepository;
@@ -54,6 +57,8 @@ namespace GymApp.View
             _paymentHistoryRepository = new PaymentHistoryRepository(filePathPaymentHistory);
             _viewModel = new LoginViewModel(_userRepository);
             _googleDriveUploader = new GoogleDriveUploader();
+            _googleDriveUploadingViewModel = new GoogleDriveUploadingViewModel();
+            _googleDriveUploadingPage = new GoogleDriveUploading(_googleDriveUploadingViewModel);
             _usersOldHash = GetFileHash(filePathUsers);
             _notesOldHash = GetFileHash(filePathNotes);
             _historyOldHash = GetFileHash(filePathPaymentHistory);
@@ -95,14 +100,22 @@ namespace GymApp.View
             }
         }
 
-        private void ButtonClose_Click(object sender, RoutedEventArgs e)
+        private async void ButtonClose_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
             if (DateTime.Now.Day == 25)
                 _userRepository.CheckMembership();
 
-            var task =  CheckDatabase();
-            task.GetAwaiter().GetResult();
+            _googleDriveUploadingPage.Show();   
+            await Task.Delay(1000);
+            await CheckDatabase();
+            await Task.Delay(1000);
+            _googleDriveUploadingPage.Close();
+            //Thread.Sleep(2000);
+ 
+            //var task =  CheckDatabase();
+            //task.GetAwaiter().GetResult();
+           // _googleDriveUploadingPage.Close();
             
         }
         public string GetFileHash(string filePath)
@@ -122,12 +135,26 @@ namespace GymApp.View
             _notesNewHash = GetFileHash(filePathNotes);
             _historyNewHash = GetFileHash(filePathPaymentHistory);
             if (!_usersOldHash.Equals(_usersNewHash))
+            {
                 _googleDriveUploader.UploadFile("Users.json");
+            }
+            await _googleDriveUploadingViewModel.UpdateStatus(33);
+            await Task.Delay(1000);
+            
             if (!_notesOldHash.Equals(_notesNewHash))
+            {
                 _googleDriveUploader.UploadFile("Notes.json");
+            }
+            await _googleDriveUploadingViewModel.UpdateStatus(66);
+            await Task.Delay(1000);
             if (!_historyOldHash.Equals(_historyNewHash))
-                 _googleDriveUploader.UploadFile("Payment history.json");
+            {
+                _googleDriveUploader.UploadFile("Payment history.json");
+            }
 
+            await _googleDriveUploadingViewModel.UpdateStatus(100);
+           
+            
             Console.WriteLine("");
         }
     }
