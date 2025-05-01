@@ -26,6 +26,8 @@ namespace GymApp.ViewModel
         #region Propetries
         private int _id;
         public int Id { get => _id; set { _id = value; OnPropertyChanged(); } }
+        private string _isVisible = "Hidden";
+        public string IsVisible{ get => _isVisible; set { _isVisible = value; OnPropertyChanged(); } }
         private string _firstname;
         public string FirstName { get => _firstname; set { _firstname = value; OnPropertyChanged(); } }
         private string _lastname;
@@ -41,6 +43,7 @@ namespace GymApp.ViewModel
         public DateTime ExpiryDate { get => _expiryDate; set { _expiryDate = value; OnPropertyChanged(); } }
 
         private string _notes;
+        
 
         public string Notes { get => _notes; set { _notes = value; OnPropertyChanged(); SaveNotes(); } }
         private bool _isTextReadOnly = false;
@@ -140,7 +143,12 @@ namespace GymApp.ViewModel
             LastName = member.Lastname;
             
             Email = member.Email;
-           
+            if (member.TypeUser == TypeUser.Trainer)
+            {
+                IsVisible = "Visible";
+            }
+            
+            
             PaymentDate = member.PaymentDate;
             ExpiryDate = member.ExpiryDate;
             if (_notesRepository.Get(id) == null)
@@ -149,7 +157,7 @@ namespace GymApp.ViewModel
                 Notes = memberNotes.Notes;
             foreach(var item in _paymentHistoryRepository.GetAll())
             {
-                if (item.Id == id)
+                if (item.MemberId == id)
                 {
                     PaymentHistory.Add(item);
                 }

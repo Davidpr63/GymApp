@@ -1,6 +1,7 @@
 ﻿
 using GymApp.Database.IRepository;
 using GymApp.Database.Repository;
+using GymApp.EmailService;
 using GymApp.GoogleDrive;
 using GymApp.Model;
 using GymApp.ViewModel;
@@ -33,6 +34,7 @@ namespace GymApp.View
         private readonly INotesRepository _notesRepository;
         private readonly IPaymentHistoryRepository _paymentHistoryRepository;
         private readonly IGoogleDriveUploader _googleDriveUploader;
+        private readonly IEmailService _emailService;
         private string filePathUsers = ConfigurationManager.AppSettings["DatabaseFilePath"] + "/Users.json";
         private string filePathNotes = ConfigurationManager.AppSettings["DatabaseFilePath"] + "/Notes.json";
         private string filePathPaymentHistory = ConfigurationManager.AppSettings["DatabaseFilePath"] + "/Payment history.json";
@@ -46,8 +48,8 @@ namespace GymApp.View
         public LoginPage()
         {
             InitializeComponent();
-            
-            _userRepository = new UserRepository(filePathUsers);
+            _emailService = new EmailService.EmailService();
+            _userRepository = new UserRepository(filePathUsers, _emailService);
             _notesRepository = new NotesRepository(filePathNotes);
             _paymentHistoryRepository = new PaymentHistoryRepository(filePathPaymentHistory);
             _viewModel = new LoginViewModel(_userRepository);
@@ -96,6 +98,9 @@ namespace GymApp.View
         private void ButtonClose_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
+            if (DateTime.Now.Day == 25)
+                _userRepository.CheckMembership();
+
             var task =  CheckDatabase();
             task.GetAwaiter().GetResult();
             

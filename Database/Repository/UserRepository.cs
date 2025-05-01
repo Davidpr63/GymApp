@@ -1,4 +1,5 @@
 ﻿using GymApp.Database.IRepository;
+using GymApp.EmailService;
 using GymApp.Model;
 using System;
 using System.Collections.Generic;
@@ -13,8 +14,10 @@ namespace GymApp.Database.Repository
 {
     public class UserRepository : GenericRepository<User>, IUserRepository
     {
-        public UserRepository(string filePath) : base(filePath)
+        private readonly IEmailService _emailService;
+        public UserRepository(string filePath, IEmailService emailService) : base(filePath)
         {
+            _emailService = emailService;
         }
 
         public override void Add(User entity)
@@ -70,6 +73,21 @@ namespace GymApp.Database.Repository
             SaveAll(list);
 
             //base.Delete(entity);
+        }
+
+        public void CheckMembership()
+        {
+            
+            var list = GetAll();
+            foreach (var item in list)
+            {
+                if (item.ExpiryDate.Date.AddDays(-6) == DateTime.Now.Date && !string.IsNullOrEmpty(item.Email) && !item.Email.Equals("Unesite email..."))
+                {
+                    item.IsMembershipPaid = false;
+                    _emailService.SendEmail(item, false);
+                }
+            }
+            SaveAll(list);
         }
     }
 }

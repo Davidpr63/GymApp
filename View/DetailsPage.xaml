@@ -62,9 +62,9 @@
                             <TextBlock Text="Email: " FontWeight="Bold" Width="100"/>
                             <TextBox x:Name="EmailTB" Text="{Binding Email, Mode=TwoWay}"  GotFocus="EmailTB_GotFocus" LostFocus="EmailTB_LostFocus"/>
                         </StackPanel>
-                        <StackPanel Orientation="Horizontal" Margin="0,5">
-                            <TextBlock Text="Nova lozinka: " FontWeight="Bold" Width="100"/>
-                            <TextBox x:Name="NewPasswordTB" Text="{Binding NewPassword}" GotFocus="NewPasswordTB_GotFocus" LostFocus="NewPasswordTB_LostFocus"/>
+                        <StackPanel Orientation="Horizontal" Margin="0,5" Visibility="{Binding IsVisible}">
+                            <TextBlock Text="Nova lozinka: "  FontWeight="Bold" Width="100"/>
+                            <TextBox x:Name="NewPasswordTB"  Text="{Binding NewPassword}"  GotFocus="NewPasswordTB_GotFocus" LostFocus="NewPasswordTB_LostFocus"/>
                         </StackPanel>
 
                         <StackPanel Orientation="Horizontal" Margin="0,5">

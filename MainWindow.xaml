@@ -88,6 +88,7 @@
                     VerticalAlignment="Center"
                     IsChecked="{Binding ActiveMembersNotPaidIsChecked}"
                     Margin="10 0 0 0"/>
+                
                 <CheckBox
                     Content="Imaju beleške"
                     VerticalAlignment="Center"

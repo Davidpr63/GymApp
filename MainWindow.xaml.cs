@@ -103,7 +103,7 @@ namespace GymApp
         {
             if(string.IsNullOrEmpty(SearchTB.Text))
             {
-                SearchTB.Text = "Unesite ID clana...";
+                SearchTB.Text = "Unesite ID člana...";
                 SearchTB.Foreground = Brushes.Gray;
             }
         }

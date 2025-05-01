@@ -1,4 +1,5 @@
-﻿using GymApp.Model;
+﻿using GymApp.EmailService;
+using GymApp.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +12,7 @@ namespace GymApp.Database.IRepository
     {
         bool Authenticate(string usename, string password);
 
+        void CheckMembership();
 
     }
 }

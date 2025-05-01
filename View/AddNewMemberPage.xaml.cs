@@ -71,18 +71,19 @@ namespace GymApp.View
         }
         private void EmailTextBox_GotFocus(object sender, RoutedEventArgs e)
         {
-            if (EmailTextBox.Text.Equals("Unesite email..."))
+            if (EmailTextBox.Text.Equals("Unesite email...(opciono)"))
             {
                 EmailTextBox.Text = "";
                 EmailTextBox.Foreground = Brushes.Black;
             }
+            
         }
 
         private void EmailTextBox_LostFocus(object sender, RoutedEventArgs e)
         {
             if (string.IsNullOrEmpty(EmailTextBox.Text))
             {
-                EmailTextBox.Text = "Unesite email...";
+                EmailTextBox.Text = "Unesite email...(opciono)";
                 EmailTextBox.Foreground = Brushes.Gray;
             }
         }

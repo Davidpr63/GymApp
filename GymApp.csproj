@@ -115,6 +115,8 @@
     <Compile Include="Database\Repository\NotesRepository.cs" />
     <Compile Include="Database\Repository\PaymentHistoryRepository.cs" />
     <Compile Include="Database\Repository\UserRepository.cs" />
+    <Compile Include="EmailService\EmailService.cs" />
+    <Compile Include="EmailService\IEmailService.cs" />
     <Compile Include="GoogleDrive\GoogleDriveUploader.cs" />
     <Compile Include="GoogleDrive\IGoogleDriveUploader.cs" />
     <Compile Include="Model\Note.cs" />

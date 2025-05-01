@@ -36,7 +36,7 @@ namespace GymApp.Database.Repository
         public override void Delete(PaymentHistory entity)
         {
             var list = GetAll();
-            list.RemoveAll(x => x.Id == entity.Id);
+            list.RemoveAll(x => x.MemberId == entity.MemberId);
             SaveAll(list);
         }
 

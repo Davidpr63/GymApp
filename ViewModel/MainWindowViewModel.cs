@@ -1,5 +1,6 @@
 ﻿using GymApp.Common;
 using GymApp.Database.IRepository;
+using GymApp.EmailService;
 using GymApp.GoogleDrive;
 using GymApp.Model;
 using System;
@@ -13,6 +14,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using GymApp.EmailService;
 
 namespace GymApp.ViewModel
 {
@@ -52,13 +54,14 @@ namespace GymApp.ViewModel
         public Action OpenAddMemberWindow;
         public Action<object> OpenDetailsWindow;
         public Action<object> OpenConfirmationPage;
-       
+        private readonly IEmailService _emailService;
         public MainWindowViewModel(string username, IUserRepository userRepository, INotesRepository notesRepository, IPaymentHistoryRepository paymentHistoryRepository)
         {
             LoggedInUsername = $"Trener - {username}";
             _userRepository = userRepository;
             _notesRepository = notesRepository;
             _paymentHistoryRepository = paymentHistoryRepository;
+            _emailService = new EmailService.EmailService();
             FillOutOutputList(_userRepository.GetAll());
             LogoutCommand = new RelayCommand(Logout);
             AddNewMemberCommand = new RelayCommand(AddNewMember);
@@ -88,15 +91,18 @@ namespace GymApp.ViewModel
 
                     listOfFilterMember = _userRepository.GetAll().Where(x => x.Id == id).ToList();
                     FillOutOutputList(listOfFilterMember);
-
+                    return;
                 }
-                if(string.IsNullOrEmpty(SearchId) || !SearchId.Equals("Unesite ID člana..."))
-                    FillOutOutputList(_userRepository.GetAll());
-                else
+                if (string.IsNullOrWhiteSpace(SearchId) || SearchId == "Unesite ID člana...")
                 {
                     FillOutOutputList(_userRepository.GetAll());
-                    MessageBox.Show("ID mora biti broj");
+                    return;
                 }
+
+                 
+                FillOutOutputList(_userRepository.GetAll());
+                MessageBox.Show("ID mora biti broj");
+
             }
             catch (Exception e)
             {
@@ -134,7 +140,7 @@ namespace GymApp.ViewModel
             }
             if (!ActiveMembersIsChecked && HaveNotesIsChecked && ActiveMembersNotPaidIsChecked)
             {
-                NonActiveMembersWithNotes();
+                InActiveMembersWithNotes();
             }
             if (ActiveMembersIsChecked && ActiveMembersNotPaidIsChecked && HaveNotesIsChecked)
             {
@@ -217,7 +223,7 @@ namespace GymApp.ViewModel
                 throw;
             }
         }
-        private void NonActiveMembersWithNotes()
+        private void InActiveMembersWithNotes()
         {
             List<User> filteredMembers = new List<User>();
             try
@@ -250,6 +256,7 @@ namespace GymApp.ViewModel
 
             try
             {
+                var membersPaymennts = _paymentHistoryRepository.Get(Id);
                 var member = _userRepository.Get(Id);
                 if (member.TypeUser == TypeUser.Trainer)
                 {
@@ -264,7 +271,10 @@ namespace GymApp.ViewModel
                 member.IsMembershipPaid = true;
                 member.PaymentDate = DateTime.Now;
                 member.ExpiryDate = DateTime.Now.AddDays(30);
-
+                membersPaymennts.PaymentDate = member.PaymentDate;
+                membersPaymennts.IsPaid = true;
+                membersPaymennts.MemberId = Id;
+                _paymentHistoryRepository.Add(membersPaymennts);
                 _userRepository.Update(member);
                 _paymentHistoryRepository.Add(payments);
                 FillOutOutputList(_userRepository.GetAll());
@@ -272,6 +282,7 @@ namespace GymApp.ViewModel
                                         "",
                                         MessageBoxButton.OK,
                                         MessageBoxImage.Information);
+                _emailService.SendEmail(member, true);
                  
                 CloseConfirmPage?.Invoke();
             }
