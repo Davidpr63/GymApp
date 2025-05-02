@@ -14,6 +14,9 @@ namespace GymApp.ViewModel
         private string _percent = "0%";
 
         public string Percent { get => _percent; set { _percent = value; OnPropertyChanged(); } }
+        private int _progressValue;
+
+        public int ProgressValue { get => _progressValue; set { _progressValue = value; OnPropertyChanged(); } }
         public GoogleDriveUploadingViewModel()
         {
             
@@ -24,12 +27,15 @@ namespace GymApp.ViewModel
             if (percent == 100)
             {
                 Percent = $"Sačuvano : {percent}%";
+                ProgressValue = percent;
                 await Task.Delay(1000);
                 Percent = "Uspesno sačuvani podaci!";
-                
             }
             else
+            {
                 Percent = $"Sačuvano : {percent}%";
+                ProgressValue = percent;
+            }
         }
         public event PropertyChangedEventHandler PropertyChanged;
 

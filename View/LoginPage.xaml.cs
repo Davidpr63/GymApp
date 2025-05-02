@@ -108,13 +108,13 @@ namespace GymApp.View
 
             _googleDriveUploadingPage.Show();   
             await Task.Delay(1000);
+            //var task = CheckDatabase();
+            //task.GetAwaiter().GetResult();
             await CheckDatabase();
-            await Task.Delay(1000);
-            _googleDriveUploadingPage.Close();
+           
+            Application.Current.Shutdown();
             //Thread.Sleep(2000);
  
-            //var task =  CheckDatabase();
-            //task.GetAwaiter().GetResult();
            // _googleDriveUploadingPage.Close();
             
         }
@@ -153,7 +153,7 @@ namespace GymApp.View
             }
 
             await _googleDriveUploadingViewModel.UpdateStatus(100);
-           
+            await Task.Delay(1000);
             
             Console.WriteLine("");
         }
