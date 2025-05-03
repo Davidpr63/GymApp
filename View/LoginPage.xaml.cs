@@ -68,7 +68,12 @@ namespace GymApp.View
                 var mainWindow = new MainWindow(LoggedInUser, _userRepository, _notesRepository, _paymentHistoryRepository);
                 mainWindow.Show();
                 this.Close();
-            };  
+            };
+            _viewModel.OpenAddNewMember = () =>
+            {
+                var addMemberWindow = new AddNewMemberPage(TypeUser.Trainer, _userRepository, _notesRepository, _paymentHistoryRepository);
+                addMemberWindow.Show();
+            };
 
             this.DataContext = _viewModel;
 
@@ -103,19 +108,23 @@ namespace GymApp.View
         private async void ButtonClose_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
-            if (DateTime.Now.Day == 25)
-                _userRepository.CheckMembership();
+            
+            await _userRepository.CheckMembership();
 
             _googleDriveUploadingPage.Show();   
             await Task.Delay(1000);
-            //var task = CheckDatabase();
-            //task.GetAwaiter().GetResult();
-            await CheckDatabase();
+            if (IsNetworkAvailable())
+            {
+                await CheckDatabase();
+
+            }
+            else
+                await _googleDriveUploadingViewModel.UpdateStatus(0);
+                
+          
            
             Application.Current.Shutdown();
-            //Thread.Sleep(2000);
- 
-           // _googleDriveUploadingPage.Close();
+            
             
         }
         public string GetFileHash(string filePath)
@@ -129,6 +138,11 @@ namespace GymApp.View
                 }
             }
         }
+        public bool IsNetworkAvailable()
+        {
+            return System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable();
+        }
+
         private async Task CheckDatabase()
         {
             _usersNewHash = GetFileHash(filePathUsers);

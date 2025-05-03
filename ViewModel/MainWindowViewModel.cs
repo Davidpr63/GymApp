@@ -267,7 +267,7 @@ namespace GymApp.ViewModel
                     return;
                 }
                 var payments = _paymentHistoryRepository.Get(Id);
-                
+                member.GotEmail = false;
                 member.IsMembershipPaid = true;
                 member.PaymentDate = DateTime.Now;
                 member.ExpiryDate = DateTime.Now.AddDays(30);
@@ -282,7 +282,11 @@ namespace GymApp.ViewModel
                                         "",
                                         MessageBoxButton.OK,
                                         MessageBoxImage.Information);
-                _emailService.SendEmail(member, true);
+                if (!string.IsNullOrEmpty(member.Email) && !member.Email.Equals("Unesite email...(opciono)"))
+                {
+                    _emailService.SendEmail(member, true);
+
+                }
                  
                 CloseConfirmPage?.Invoke();
             }

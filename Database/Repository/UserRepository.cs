@@ -25,7 +25,11 @@ namespace GymApp.Database.Repository
             if (GetAll().Count == 0)
                 entity.Id = 1;
             entity.Id = ++GetAll().LastOrDefault().Id;
-            
+            if (entity.TypeUser == TypeUser.Trainer)
+            {
+                entity.Salt = GenericSalt();
+                entity.Password = HashPassword(entity.Password, entity.Salt);
+            }
             base.Add(entity);
         }
 
@@ -75,19 +79,41 @@ namespace GymApp.Database.Repository
             //base.Delete(entity);
         }
 
-        public void CheckMembership()
+        public async Task CheckMembership()
         {
             
-            var list = GetAll();
+            var list = GetAll().Where(x => x.TypeUser == TypeUser.Member).ToList();
             foreach (var item in list)
             {
-                if (item.ExpiryDate.Date.AddDays(-6) == DateTime.Now.Date && !string.IsNullOrEmpty(item.Email) && !item.Email.Equals("Unesite email..."))
+                if (item.ExpiryDate.Date.AddDays(-5) == DateTime.Now.Date && !item.GotEmail && !string.IsNullOrEmpty(item.Email) && !item.Email.Equals("Unesite email...(opciono)"))
                 {
                     item.IsMembershipPaid = false;
-                    _emailService.SendEmail(item, false);
+                    item.GotEmail = true;
+                    await _emailService.SendEmail(item, false);
                 }
             }
-            SaveAll(list);
+            SaveAll(GetAll());
+        }
+
+        public string GenericSalt()
+        {
+            int size = 32;
+            using (var rng = new System.Security.Cryptography.RNGCryptoServiceProvider())
+            {
+                byte[] saltBytes = new byte[size];
+                rng.GetBytes(saltBytes);
+                return Convert.ToBase64String(saltBytes);
+            }
+        }
+
+        public string HashPassword(string password, string salt)
+        {
+            byte[] saltBytes = Convert.FromBase64String(salt);
+
+            var pbkdf2 = new Rfc2898DeriveBytes(password, saltBytes, 100_000, HashAlgorithmName.SHA256);
+            byte[] hashBytes = pbkdf2.GetBytes(32);
+
+            return Convert.ToBase64String(hashBytes);
         }
     }
 }

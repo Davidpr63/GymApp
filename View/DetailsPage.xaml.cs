@@ -83,7 +83,7 @@ namespace GymApp.View
 
         private void EmailTB_GotFocus(object sender, RoutedEventArgs e)
         {
-            if (EmailTB.Text.Equals("Unesite email..."))
+            if (EmailTB.Text.Equals("Unesite email...(opciono)"))
             {
                 EmailTB.Text = "";
                 EmailTB.Foreground = Brushes.Black;
@@ -94,7 +94,7 @@ namespace GymApp.View
         {
             if (string.IsNullOrEmpty(EmailTB.Text))
             {
-                EmailTB.Text = "Unesite email...";
+                EmailTB.Text = "Unesite email...(opciono)";
             }
             EmailTB.Foreground = Brushes.Gray;
         }

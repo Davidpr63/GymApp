@@ -10,9 +10,12 @@ namespace GymApp.Database.IRepository
 {
     public interface IUserRepository : IGenericRepository<User>
     {
+        string GenericSalt();
+        
+        string HashPassword(string password, string salt);
         bool Authenticate(string usename, string password);
 
-        void CheckMembership();
+        Task CheckMembership();
 
     }
 }

@@ -17,7 +17,7 @@ namespace GymApp.EmailService
         private string _email;
         private string _password;
         private string _message = "";
-        public void SendEmail(User member, bool typeOfEmail)
+        public async Task SendEmail(User member, bool typeOfEmail)
         {
             _email = ConfigurationManager.AppSettings["Email"];
             _password = ConfigurationManager.AppSettings["Password"];
@@ -41,7 +41,7 @@ namespace GymApp.EmailService
             
         
             string username = _email;
-            member.Email = "david.02.petrovic@gmail.com";
+            
 
             SmtpClient client = new SmtpClient(smtpServer, port);
             client.EnableSsl = true;

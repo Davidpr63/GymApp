@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace GymApp.ViewModel
 {
@@ -24,6 +25,14 @@ namespace GymApp.ViewModel
 
         public async Task UpdateStatus(int percent)
         {
+            if (percent == 0)
+            {
+                MessageBox.Show("Trenutno nemate interneta, podaci nece biti sacuvani na Google drive-u.",
+                                "Greska",
+                                MessageBoxButton.OK,
+                                MessageBoxImage.Error);
+                return;
+            }
             if (percent == 100)
             {
                 Percent = $"Sačuvano : {percent}%";

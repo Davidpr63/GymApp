@@ -53,7 +53,7 @@ namespace GymApp
             _historyOldHash = GetFileHash(filePathPaymentHistory);
             _viewModel.OpenAddMemberWindow = () =>
             {
-                var addNewMemberWindow = new AddNewMemberPage(userRepository, notesRepository, paymentHistoryRepository);
+                var addNewMemberWindow = new AddNewMemberPage(TypeUser.Member, userRepository, notesRepository, paymentHistoryRepository);
                 addNewMemberWindow.Show();
             };
             _viewModel.OpenDetailsWindow = (object id) =>

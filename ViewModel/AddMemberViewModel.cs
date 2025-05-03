@@ -1,6 +1,7 @@
 ﻿using GymApp.Common;
 using GymApp.Database.IRepository;
 using GymApp.Model;
+using Microsoft.Xaml.Behaviors.Media;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -19,11 +20,21 @@ namespace GymApp.ViewModel
         private string _firstname = "Unesite ime...";
         public string FirstName { get => _firstname; set { _firstname = value; OnPropertyChanged(); } }
         private string _lastname = "Unesite prezime...";
+        
         public string LastName { get => _lastname; set { _lastname = value; OnPropertyChanged(); } }
+        private string _username = "Unesite korisničko ime...";
+        public string Username { get => _username; set { _username = value; OnPropertyChanged(); } }
+        private string _password;
+        public string Password { get => _password; set { _password = value; OnPropertyChanged(); } }
+
         private string _email = "Unesite email...(opciono)";
         public string Email { get => _email; set { _email = value; OnPropertyChanged(); } }
+        private string _isTrainer;
+        public string IsTrainer { get => _isTrainer; set { _isTrainer = value; OnPropertyChanged(); } }
+
         private string _errorMessage;
         public string ErrorMessage { get => _errorMessage; set { _errorMessage = value; OnPropertyChanged(); } }
+        private TypeUser _typeUser { get; set; }
         #endregion
 
         #region Commands
@@ -34,10 +45,15 @@ namespace GymApp.ViewModel
         private readonly IPaymentHistoryRepository _paymentHistoryRepository;
         public Action CloseAddWindow;
         public Action RefreshOutputList;
-        public AddMemberViewModel(IUserRepository userRepository, INotesRepository notesRepository, IPaymentHistoryRepository paymentHistoryRepository)
+        public AddMemberViewModel(TypeUser typeUser, IUserRepository userRepository, INotesRepository notesRepository, IPaymentHistoryRepository paymentHistoryRepository)
         {
             _userRepository = userRepository;
             _notesRepository = notesRepository;
+            _typeUser = typeUser;
+            if (_typeUser == TypeUser.Member)
+            {
+                IsTrainer = "Collapsed";
+            }
             _paymentHistoryRepository = paymentHistoryRepository;
             AddNewMemberCommand = new RelayCommand(AddNewMember);
         }
@@ -47,13 +63,17 @@ namespace GymApp.ViewModel
             bool result = IsAddFormValid();
             if (result)
             {
+                
                 User newMember = new User()
                 {
                     Firstname = FirstName,
                     Lastname = LastName,
-                    TypeUser = TypeUser.Member,
+                    Username = Username,
+                    Password = Password,
+                    TypeUser = _typeUser,
                     Email = Email,
                     IsMembershipPaid = true,
+                    GotEmail = false,
                     PaymentDate = DateTime.Now,
                     ExpiryDate = DateTime.Now.AddDays(30),
                 };
@@ -67,11 +87,23 @@ namespace GymApp.ViewModel
                     PaymentDate = DateTime.Now
                 };
                 _paymentHistoryRepository.Add(paymentHistory);
-                MessageBox.Show($"Novi clan je uspesno dodat!\nNjegov ID : {newMember.Id}",
+                if (_typeUser == TypeUser.Trainer)
+                {
+                    MessageBox.Show($"Dodat je novi trener {newMember.Firstname}",
                     "Uspesno",
                     MessageBoxButton.OK,
                     MessageBoxImage.Information
                     );
+                }
+                else 
+                {
+                    MessageBox.Show($"Novi clan je uspesno dodat!\nNjegov ID : {newMember.Id}",
+                        "Uspesno",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Information
+                        );
+                
+                }
                 ErrorMessage = "";
                 MainWindowViewModel.FillOutOutputList(_userRepository.GetAll());
                 CloseAddWindow?.Invoke();
@@ -82,11 +114,26 @@ namespace GymApp.ViewModel
 
         private bool IsAddFormValid()
         {
-            if (string.IsNullOrEmpty(FirstName) || string.IsNullOrEmpty(LastName)) // add email later
+            if (_typeUser == TypeUser.Member)
+            {
+                Password = string.Empty;
+                Username = string.Empty;
+                if (string.IsNullOrEmpty(FirstName) || string.IsNullOrEmpty(LastName)) // add email later
+                {
+                    return false;
+                }
+                if (FirstName.Equals("Unesite ime...") || LastName.Equals("Unesite prezime...")) // add email later
+                {
+                    return false;
+                }
+
+                return true;
+            }
+            if (string.IsNullOrEmpty(FirstName) || string.IsNullOrEmpty(LastName) || string.IsNullOrEmpty(Username) || string.IsNullOrEmpty(Password)) // add email later
             {
                 return false;
             }
-            if (FirstName.Equals("Unesite ime...") || LastName.Equals("Unesite prezime...")) // add email later
+            if (FirstName.Equals("Unesite ime...") || LastName.Equals("Unesite prezime...") || Username.Equals("Unesite korisničko ime...")) // add email later
             {
                 return false;
             }

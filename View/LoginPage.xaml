@@ -66,6 +66,16 @@
             <Setter Property="FontSize" Value="16"/>
             <Setter Property="Cursor" Value="Hand"/>
         </Style>
+        <Style x:Key="RegistrationButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="#222222"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Height" Value="45"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
 
         <Style x:Key="ErrorMessageStyle" TargetType="TextBlock">
             <Setter Property="Foreground" Value="Red"/>
@@ -127,7 +137,11 @@
                     <TextBlock Text="{Binding PasswordError}" Style="{StaticResource ErrorMessageStyle}" Visibility="{Binding PasswordError, Converter={StaticResource NullToVisibilityConverter}}" HorizontalAlignment="Center"/>
 
                     <!-- Login Button -->
-                    <Button Content="Uloguj se" Command="{Binding LoginCommand}" Style="{StaticResource LoginButtonStyle}" Margin="0,10,0,0"/>
+                    
+                        <Button Content="Uloguj se" Command="{Binding LoginCommand}" Style="{StaticResource LoginButtonStyle}" Margin="0,10,0,0"/>
+                        <Button Content="Dodaj novog trenera" Command="{Binding AddTrainerCommand}" Style="{StaticResource RegistrationButtonStyle}" Margin="0,10,0,0"/>
+                        
+                    
                 </StackPanel>
             </Grid>
         </Border>

@@ -32,7 +32,11 @@ namespace GymApp.ViewModel
         public string FirstName { get => _firstname; set { _firstname = value; OnPropertyChanged(); } }
         private string _lastname;
         public string LastName { get => _lastname; set { _lastname = value; OnPropertyChanged(); } }
-        private string _email = "Unesite email...";
+
+        private string _isTrainer;
+        public string IsTrainer { get => _isTrainer; set { _isTrainer = value; OnPropertyChanged(); } }
+
+        private string _email = "Unesite email...(opciono)";
         public string Email { get => _email; set { _email = value; OnPropertyChanged(); SaveEmail(); } }
         private string _newPassword = "Nova lozinka...";
         public string NewPassword { get => _newPassword; set { _newPassword = value; OnPropertyChanged(); ChangeAdminPassword(); } }
@@ -146,6 +150,7 @@ namespace GymApp.ViewModel
             if (member.TypeUser == TypeUser.Trainer)
             {
                 IsVisible = "Visible";
+                IsTrainer = "Hidden";
             }
             
             

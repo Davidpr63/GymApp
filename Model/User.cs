@@ -19,6 +19,7 @@ namespace GymApp.Model
         public string Salt { get; set; } = string.Empty ;
         public string Email { get; set; }  
         
+        public bool GotEmail { get; set; }
         public bool IsMembershipPaid { get; set; }
         public bool HaveNote { get; set; }
         public DateTime PaymentDate { get; set; }

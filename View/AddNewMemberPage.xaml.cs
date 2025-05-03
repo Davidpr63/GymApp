@@ -1,4 +1,5 @@
 ﻿using GymApp.Database.IRepository;
+using GymApp.Model;
 using GymApp.ViewModel;
 using System;
 using System.Collections.Generic;
@@ -22,10 +23,10 @@ namespace GymApp.View
     public partial class AddNewMemberPage : Window
     {
         private readonly AddMemberViewModel _viewModel;
-        public AddNewMemberPage(IUserRepository userRepository, INotesRepository notesRepository, IPaymentHistoryRepository paymentHistoryRepository)
+        public AddNewMemberPage(TypeUser typeUser, IUserRepository userRepository, INotesRepository notesRepository, IPaymentHistoryRepository paymentHistoryRepository)
         {
             InitializeComponent();
-            _viewModel = new AddMemberViewModel(userRepository, notesRepository, paymentHistoryRepository);
+            _viewModel = new AddMemberViewModel(typeUser, userRepository, notesRepository, paymentHistoryRepository);
             _viewModel.CloseAddWindow = () =>
             {
                 this.Close();
@@ -93,6 +94,27 @@ namespace GymApp.View
             this.Close();
         }
 
-      
+        private void UsernameTextBox_GotFocus(object sender, RoutedEventArgs e)
+        {
+            if (UsernameTextBox.Text.Equals("Unesite korisničko ime..."))
+            {
+                UsernameTextBox.Text = "";
+                UsernameTextBox.Foreground = Brushes.Black;
+            }
+        }
+
+        private void UsernameTextBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (string.IsNullOrEmpty(UsernameTextBox.Text))
+            {
+                UsernameTextBox.Text = "Unesite korisničko ime...";
+                UsernameTextBox.Foreground = Brushes.Gray;
+            }
+        }
+
+        private void PasswordTextBox_PasswordChanged(object sender, RoutedEventArgs e)
+        {
+            _viewModel.Password = PasswordTextBox.Password;
+        }
     }
 }

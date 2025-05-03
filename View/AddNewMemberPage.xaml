@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:GymApp.View"
         xmlns:converter="clr-namespace:GymApp.Converter"
         mc:Ignorable="d"
-        Title="Dodaj novog člana" Height="420" Width="610"
+        Title="Dodaj novog člana" Height="550" Width="610"
         WindowStartupLocation="CenterScreen"
         WindowStyle="None"
         AllowsTransparency="True"
@@ -119,6 +119,24 @@
                              GotFocus="LastnameTextBox_GotFocus" 
                              LostFocus="LastnameTextBox_LostFocus"
                              BorderBrush="#ccc" BorderThickness="1" />
+                    <TextBlock Visibility="{Binding IsTrainer}" Text="Korisničko ime :" FontWeight="Bold" Margin="0 10 0 5"/>
+                    <TextBox  x:Name="UsernameTextBox" 
+                         Visibility="{Binding IsTrainer}"
+                         Text="{Binding Username}" 
+                         Foreground="Gray" 
+                         VerticalContentAlignment="Center" 
+                         Height="35"
+                         GotFocus="UsernameTextBox_GotFocus" 
+                         LostFocus="UsernameTextBox_LostFocus"
+                         BorderBrush="#ccc" BorderThickness="1" />
+                    <TextBlock Visibility="{Binding IsTrainer}" Text="Lozinka :" FontWeight="Bold" Margin="0 10 0 5"/>
+                    <PasswordBox Visibility="{Binding IsTrainer}" x:Name="PasswordTextBox" 
+                         PasswordChanged="PasswordTextBox_PasswordChanged" 
+                          
+                         VerticalContentAlignment="Center" 
+                         Height="35"
+                         
+                         BorderBrush="#ccc" BorderThickness="1" />
 
                     <TextBlock Text="Email:" FontWeight="Bold" Margin="0 10 0 5"/>
                     <TextBox x:Name="EmailTextBox" 

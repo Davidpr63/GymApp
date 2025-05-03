@@ -30,12 +30,17 @@ namespace GymApp.ViewModel
 
         #region Commands
         public ICommand LoginCommand { get; }
+        public ICommand AddTrainerCommand { get; }
+
         #endregion
+
+        public Action OpenAddNewMember;
 
         public LoginViewModel(IUserRepository userRepository)
         {
             _userRepository = userRepository;
             LoginCommand = new RelayCommand(Login);
+            AddTrainerCommand = new RelayCommand(AddNewTrainer);
         }
 
         private void Login() 
@@ -72,6 +77,10 @@ namespace GymApp.ViewModel
             }
 
             return false;
+        }
+        private void AddNewTrainer()
+        {
+            OpenAddNewMember?.Invoke();
         }
         public event PropertyChangedEventHandler PropertyChanged;
         private void OnPropertyChanged([CallerMemberName] string propertyName = null)
