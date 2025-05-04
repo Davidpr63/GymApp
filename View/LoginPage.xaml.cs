@@ -77,6 +77,7 @@ namespace GymApp.View
             {
                 var addMemberWindow = new AddNewMemberPage(TypeUser.Trainer, _userRepository, _notesRepository, _paymentHistoryRepository, _logger);
                 addMemberWindow.Show();
+                addMemberWindow.Activate();
             };
 
             this.DataContext = _viewModel;

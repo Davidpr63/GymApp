@@ -10,6 +10,7 @@
         Title="GymApp"
         Width="900" Height="600"
         Background="#fafafa"
+        WindowStyle="None"
         >
 
     <Window.Resources>

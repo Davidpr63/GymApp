@@ -24,7 +24,8 @@ namespace GymApp.Database.Repository
         {
             if (GetAll().Count == 0)
                 entity.Id = 1;
-            entity.Id = ++GetAll().LastOrDefault().Id;
+            else
+                entity.Id = ++GetAll().LastOrDefault().Id;
             if (entity.TypeUser == TypeUser.Trainer)
             {
                 entity.Salt = GenericSalt();

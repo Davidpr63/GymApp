@@ -32,9 +32,18 @@ namespace GymApp
        
         protected override void OnStartup(StartupEventArgs e)
         {
-            
-            var loginWindow = new LoginPage();
-            loginWindow.Show();
+
+            try
+            {
+                var loginWindow = new LoginPage();
+                loginWindow.Show();
+            }
+            catch (Exception ex)
+            {
+                File.WriteAllText("C:/GymDatabase/Logger.txt", ex.ToString());
+                MessageBox.Show("Greška prilikom pokretanja aplikacije. Pogledaj error_log.txt.");
+            }
+           
         }
 
        

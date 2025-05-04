@@ -45,11 +45,13 @@ namespace GymApp
             {
                 var addNewMemberWindow = new AddNewMemberPage(TypeUser.Member, userRepository, notesRepository, paymentHistoryRepository, logger);
                 addNewMemberWindow.Show();
+                addNewMemberWindow.Activate();
             };
             _viewModel.OpenDetailsWindow = (object id) =>
             {
                 var detailsWindow = new DetailsPage(id, userRepository, notesRepository, paymentHistoryRepository);
                 detailsWindow.Show();
+                detailsWindow.Activate();
             };
             _viewModel.CloseMain = () =>
             {
@@ -67,6 +69,7 @@ namespace GymApp
                 int Id = Convert.ToInt32(id);
                 var confirmWindow = new Confirmation(Id ,userRepository, notesRepository, paymentHistoryRepository, logger);
                 confirmWindow.Show();
+                confirmWindow.Activate();
             };
 
             

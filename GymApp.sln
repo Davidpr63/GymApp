@@ -5,7 +5,7 @@ VisualStudioVersion = 17.12.35506.116
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GymApp", "GymApp.csproj", "{750C3631-970C-4F6D-A17F-F491F23CF968}"
 EndProject
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "GymAppInstaller", "..\GymAppInstaller\GymAppInstaller.vdproj", "{6B2EBB51-2BD1-4271-AB04-226B6B895513}"
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Trening Centar", "..\Trening Centar\Trening Centar.vdproj", "{A9C40BDA-D16D-4635-B404-74B0B5149200}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,8 +17,8 @@ Global
 		{750C3631-970C-4F6D-A17F-F491F23CF968}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{750C3631-970C-4F6D-A17F-F491F23CF968}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{750C3631-970C-4F6D-A17F-F491F23CF968}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6B2EBB51-2BD1-4271-AB04-226B6B895513}.Debug|Any CPU.ActiveCfg = Debug
-		{6B2EBB51-2BD1-4271-AB04-226B6B895513}.Release|Any CPU.ActiveCfg = Release
+		{A9C40BDA-D16D-4635-B404-74B0B5149200}.Debug|Any CPU.ActiveCfg = Debug
+		{A9C40BDA-D16D-4635-B404-74B0B5149200}.Release|Any CPU.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
