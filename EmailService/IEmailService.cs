@@ -10,5 +10,6 @@ namespace GymApp.EmailService
     public interface IEmailService
     {
         Task SendEmail(User member, bool typeOfEmail);
+       
     }
 }

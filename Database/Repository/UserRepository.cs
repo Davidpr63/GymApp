@@ -88,8 +88,8 @@ namespace GymApp.Database.Repository
                 if (item.ExpiryDate.Date.AddDays(-5) == DateTime.Now.Date && !item.GotEmail && !string.IsNullOrEmpty(item.Email) && !item.Email.Equals("Unesite email...(opciono)"))
                 {
                     item.IsMembershipPaid = false;
-                    item.GotEmail = true;
                     await _emailService.SendEmail(item, false);
+                    item.GotEmail = true;
                 }
             }
             SaveAll(GetAll());

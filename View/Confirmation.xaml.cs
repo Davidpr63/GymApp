@@ -1,4 +1,5 @@
 ﻿using GymApp.Database.IRepository;
+using GymApp.Logger;
 using GymApp.ViewModel;
 using System;
 using System.Collections.Generic;
@@ -26,10 +27,12 @@ namespace GymApp.View
         private readonly IUserRepository _userRepository;
         private readonly INotesRepository _notesRepository;
         private readonly IPaymentHistoryRepository _paymentHistoryRepository;
-        public Confirmation(int id ,IUserRepository userRepository, INotesRepository notesRepository, IPaymentHistoryRepository paymentHistoryRepository)
+        private readonly ILogger _logger;
+        public Confirmation(int id ,IUserRepository userRepository, INotesRepository notesRepository, IPaymentHistoryRepository paymentHistoryRepository, ILogger logger)
         {
             InitializeComponent();
-            mainWindowViewModel = new MainWindowViewModel("", userRepository, notesRepository, paymentHistoryRepository);
+            _logger = logger;
+            mainWindowViewModel = new MainWindowViewModel("", userRepository, notesRepository, paymentHistoryRepository, logger);
             _userRepository = userRepository;
             _notesRepository = notesRepository;
             _paymentHistoryRepository = paymentHistoryRepository;
@@ -53,6 +56,7 @@ namespace GymApp.View
                 _userRepository.Delete(member);
                 _notesRepository.Delete(notes);
                 _paymentHistoryRepository.Delete(payments);
+                _logger.Log($"Obrisan član {member.Firstname} {member.Lastname}");
                 MainWindowViewModel.FillOutOutputList(_userRepository.GetAll());
                 this.Close();
                 MessageBox.Show($"Uspesno ste obrisali člana -> {member.Firstname} {member.Lastname}",

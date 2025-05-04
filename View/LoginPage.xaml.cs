@@ -3,6 +3,7 @@ using GymApp.Database.IRepository;
 using GymApp.Database.Repository;
 using GymApp.EmailService;
 using GymApp.GoogleDrive;
+using GymApp.Logger;
 using GymApp.Model;
 using GymApp.ViewModel;
 using System;
@@ -38,6 +39,7 @@ namespace GymApp.View
         private readonly IPaymentHistoryRepository _paymentHistoryRepository;
         private readonly IGoogleDriveUploader _googleDriveUploader;
         private readonly IEmailService _emailService;
+        private readonly ILogger _logger;
         private string filePathUsers = ConfigurationManager.AppSettings["DatabaseFilePath"] + "/Users.json";
         private string filePathNotes = ConfigurationManager.AppSettings["DatabaseFilePath"] + "/Notes.json";
         private string filePathPaymentHistory = ConfigurationManager.AppSettings["DatabaseFilePath"] + "/Payment history.json";
@@ -55,6 +57,7 @@ namespace GymApp.View
             _userRepository = new UserRepository(filePathUsers, _emailService);
             _notesRepository = new NotesRepository(filePathNotes);
             _paymentHistoryRepository = new PaymentHistoryRepository(filePathPaymentHistory);
+            _logger = new Logger.Logger();
             _viewModel = new LoginViewModel(_userRepository);
             _googleDriveUploader = new GoogleDriveUploader();
             _googleDriveUploadingViewModel = new GoogleDriveUploadingViewModel();
@@ -65,13 +68,14 @@ namespace GymApp.View
             _viewModel.LoginSuccess = (object trainer) =>
             {
                 LoggedInUser = trainer as User;
-                var mainWindow = new MainWindow(LoggedInUser, _userRepository, _notesRepository, _paymentHistoryRepository);
+                var mainWindow = new MainWindow(LoggedInUser, _userRepository, _notesRepository, _paymentHistoryRepository, _logger);
+                _logger.Log($"Trener {LoggedInUser.Firstname} {LoggedInUser.Lastname} se ulogovao!");
                 mainWindow.Show();
                 this.Close();
             };
             _viewModel.OpenAddNewMember = () =>
             {
-                var addMemberWindow = new AddNewMemberPage(TypeUser.Trainer, _userRepository, _notesRepository, _paymentHistoryRepository);
+                var addMemberWindow = new AddNewMemberPage(TypeUser.Trainer, _userRepository, _notesRepository, _paymentHistoryRepository, _logger);
                 addMemberWindow.Show();
             };
 
@@ -120,9 +124,10 @@ namespace GymApp.View
             }
             else
                 await _googleDriveUploadingViewModel.UpdateStatus(0);
-                
-          
-           
+            _logger.Log("Aplikacija je ugašena");
+            
+
+
             Application.Current.Shutdown();
             
             

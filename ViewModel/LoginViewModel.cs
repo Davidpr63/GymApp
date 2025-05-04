@@ -50,6 +50,7 @@ namespace GymApp.ViewModel
             object trainer = _userRepository.GetAll().FirstOrDefault(x => x.Username == Username);
             if (IsValid)
             {
+
                 LoginSuccess?.Invoke(trainer);
             }
             else

@@ -1,5 +1,6 @@
 ﻿using GymApp.Common;
 using GymApp.Database.IRepository;
+using GymApp.Logger;
 using GymApp.Model;
 using Microsoft.Xaml.Behaviors.Media;
 using System;
@@ -43,13 +44,15 @@ namespace GymApp.ViewModel
         private readonly IUserRepository _userRepository;
         private readonly INotesRepository _notesRepository;
         private readonly IPaymentHistoryRepository _paymentHistoryRepository;
+        private readonly ILogger _logger;
         public Action CloseAddWindow;
         public Action RefreshOutputList;
-        public AddMemberViewModel(TypeUser typeUser, IUserRepository userRepository, INotesRepository notesRepository, IPaymentHistoryRepository paymentHistoryRepository)
+        public AddMemberViewModel(TypeUser typeUser, IUserRepository userRepository, INotesRepository notesRepository, IPaymentHistoryRepository paymentHistoryRepository, ILogger logger)
         {
             _userRepository = userRepository;
             _notesRepository = notesRepository;
             _typeUser = typeUser;
+            _logger = logger;
             if (_typeUser == TypeUser.Member)
             {
                 IsTrainer = "Collapsed";
@@ -105,6 +108,7 @@ namespace GymApp.ViewModel
                 
                 }
                 ErrorMessage = "";
+                _logger.Log($"Dodat je novi član {newMember.Firstname} {newMember.Lastname}");
                 MainWindowViewModel.FillOutOutputList(_userRepository.GetAll());
                 CloseAddWindow?.Invoke();
             }

@@ -1,4 +1,5 @@
 ﻿using GymApp.Database.IRepository;
+using GymApp.Logger;
 using GymApp.Model;
 using GymApp.ViewModel;
 using System;
@@ -23,10 +24,12 @@ namespace GymApp.View
     public partial class AddNewMemberPage : Window
     {
         private readonly AddMemberViewModel _viewModel;
-        public AddNewMemberPage(TypeUser typeUser, IUserRepository userRepository, INotesRepository notesRepository, IPaymentHistoryRepository paymentHistoryRepository)
+        
+        public AddNewMemberPage(TypeUser typeUser, IUserRepository userRepository, INotesRepository notesRepository, IPaymentHistoryRepository paymentHistoryRepository, ILogger logger)
         {
             InitializeComponent();
-            _viewModel = new AddMemberViewModel(typeUser, userRepository, notesRepository, paymentHistoryRepository);
+            _viewModel = new AddMemberViewModel(typeUser, userRepository, notesRepository, paymentHistoryRepository, logger);
+          
             _viewModel.CloseAddWindow = () =>
             {
                 this.Close();

@@ -11,6 +11,10 @@
     
 
     <Grid>
+        <Image 
+            Source="/Assets/TreningCentar.png"
+            Stretch="Fill"
+            />
         <Border
             Background="White"
             CornerRadius="15"
@@ -18,6 +22,7 @@
             Margin="40"
             VerticalAlignment="Center"
             HorizontalAlignment="Center"
+            Opacity="0.9"
             >
 
             <Grid>
@@ -40,7 +45,7 @@
                     </Grid.ColumnDefinitions>
 
                     <!-- Left Side - Basic Info -->
-                    <StackPanel Grid.Column="0" VerticalAlignment="Top" Margin="10">
+                    <StackPanel Grid.Column="0" Width="300" VerticalAlignment="Top" Margin="10">
                         <TextBlock Text="Podaci o članu" FontSize="22" FontWeight="Bold" Margin="0,0,0,20"/>
 
                         <StackPanel Orientation="Horizontal" Margin="0,5">
@@ -83,7 +88,7 @@
                         <TextBlock Text="Beleške" FontSize="18" FontWeight="Bold" Margin="0,0,0,10"/>
                         <TextBox x:Name="Notes" Text="{Binding Notes, Mode=TwoWay}" AcceptsReturn="True" TextWrapping="Wrap" 
                                  VerticalScrollBarVisibility="Auto" 
-                                 Height="150" Background="#f8f9fa" BorderBrush="#ccc" BorderThickness="1"
+                                 Height="150"  Background="#f8f9fa" BorderBrush="#ccc" BorderThickness="1"
                                    Padding="8" Foreground="Black" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus"/>
 
                         <TextBlock Visibility="{Binding IsTrainer}" Text="Istorija plaćanja" FontSize="18" FontWeight="Bold" Margin="0,20,0,10"/>

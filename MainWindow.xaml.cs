@@ -1,6 +1,7 @@
 ﻿using GymApp.Database.IRepository;
 using GymApp.Database.Repository;
 using GymApp.GoogleDrive;
+using GymApp.Logger;
 using GymApp.Model;
 using GymApp.View;
 using GymApp.ViewModel;
@@ -31,29 +32,18 @@ namespace GymApp
     {
         private readonly MainWindowViewModel _viewModel;
         private LoginPage logIn = new LoginPage();
-
-        private readonly IGoogleDriveUploader _googleDriveUploader;
-        private string filePathUsers = ConfigurationManager.AppSettings["DatabaseFilePath"] + "/Users.json";
-        private string filePathNotes = ConfigurationManager.AppSettings["DatabaseFilePath"] + "/Notes.json";
-        private string filePathPaymentHistory = ConfigurationManager.AppSettings["DatabaseFilePath"] + "/Payment history.json";
-        private string _usersOldHash;
-        private string _usersNewHash;
-        private string _notesOldHash;
-        private string _notesNewHash;
-        private string _historyOldHash;
-        private string _historyNewHash;
-        public MainWindow(User trainer, IUserRepository userRepository, INotesRepository notesRepository, IPaymentHistoryRepository paymentHistoryRepository)
+       
+        
+        public MainWindow(User trainer, IUserRepository userRepository, INotesRepository notesRepository, IPaymentHistoryRepository paymentHistoryRepository, ILogger logger)
         {
             InitializeComponent();
            
-            _googleDriveUploader = new GoogleDriveUploader();
-            _viewModel = new MainWindowViewModel(trainer.Firstname, userRepository, notesRepository, paymentHistoryRepository);
-            _usersOldHash = GetFileHash(filePathUsers);
-            _notesOldHash = GetFileHash(filePathNotes);
-            _historyOldHash = GetFileHash(filePathPaymentHistory);
+            
+            _viewModel = new MainWindowViewModel(trainer.Firstname, userRepository, notesRepository, paymentHistoryRepository, logger);
+            
             _viewModel.OpenAddMemberWindow = () =>
             {
-                var addNewMemberWindow = new AddNewMemberPage(TypeUser.Member, userRepository, notesRepository, paymentHistoryRepository);
+                var addNewMemberWindow = new AddNewMemberPage(TypeUser.Member, userRepository, notesRepository, paymentHistoryRepository, logger);
                 addNewMemberWindow.Show();
             };
             _viewModel.OpenDetailsWindow = (object id) =>
@@ -66,6 +56,8 @@ namespace GymApp
                 
                 
                 logIn.Show();
+                logger.Log($"{trainer.Firstname} {trainer.Lastname} se odjavio!");
+
                 this.Close();
                 //CheckDatabase();
 
@@ -73,7 +65,7 @@ namespace GymApp
             _viewModel.OpenConfirmationPage = (object id) =>
             {
                 int Id = Convert.ToInt32(id);
-                var confirmWindow = new Confirmation(Id ,userRepository, notesRepository, paymentHistoryRepository);
+                var confirmWindow = new Confirmation(Id ,userRepository, notesRepository, paymentHistoryRepository, logger);
                 confirmWindow.Show();
             };
 
@@ -108,18 +100,7 @@ namespace GymApp
             }
         }
 
-        /*private async void CheckDatabase()
-        {
-            _usersNewHash = GetFileHash(filePathUsers);
-            _notesNewHash = GetFileHash(filePathNotes);
-            _historyNewHash = GetFileHash(filePathPaymentHistory);
-            if (!_usersOldHash.Equals(_usersNewHash))
-                await _googleDriveUploader.UploadFile("Users.json");
-            if (!_notesOldHash.Equals(_notesNewHash))
-                await _googleDriveUploader.UploadFile("Notes.json");
-            if (!_historyOldHash.Equals(_historyNewHash))
-                await _googleDriveUploader.UploadFile("Payment history.json");
-        }*/
+        
         private void Search_SelectionChanged(object sender, RoutedEventArgs e)
         {
 

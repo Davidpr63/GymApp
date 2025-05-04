@@ -21,28 +21,25 @@ namespace GymApp.GoogleDrive
 
         private string credentialsPath = "credentials.json";
         private string folderId = "1jMydKZS8_blMNbQ7HDy8YU7rJavKxCtO";
-       
+        private GoogleCredential credential;
+        private DriveService service;
         public GoogleDriveUploader()
         {
-              
-        }
-
-     
-        public void UploadFile(string filename)
-        {
-            GoogleCredential credential;
             using (var stream = new FileStream(credentialsPath, FileMode.Open, FileAccess.Read))
             {
                 credential = GoogleCredential.FromStream(stream)
                     .CreateScoped(new[] { DriveService.ScopeConstants.DriveFile });
             }
-
-            var service = new DriveService(new BaseClientService.Initializer()
+            service = new DriveService(new BaseClientService.Initializer()
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "GymApp"
             });
+        }
 
+     
+        public void UploadFile(string filename)
+        {
             string fileId = GetFileIdByName(filename);
             if (string.IsNullOrEmpty(fileId))
             {

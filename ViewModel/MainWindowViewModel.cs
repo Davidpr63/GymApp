@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using GymApp.EmailService;
+using GymApp.Logger;
 
 namespace GymApp.ViewModel
 {
@@ -23,6 +24,7 @@ namespace GymApp.ViewModel
         private readonly IUserRepository _userRepository;
         private readonly INotesRepository _notesRepository;
         private readonly IPaymentHistoryRepository _paymentHistoryRepository;
+        private ILogger _logger;
       
         public static ObservableCollection<User> Members { get; set; } = new ObservableCollection<User>();
         public ObservableCollection<User> _filteredMembers { get; set; } = new ObservableCollection<User>();
@@ -55,13 +57,14 @@ namespace GymApp.ViewModel
         public Action<object> OpenDetailsWindow;
         public Action<object> OpenConfirmationPage;
         private readonly IEmailService _emailService;
-        public MainWindowViewModel(string username, IUserRepository userRepository, INotesRepository notesRepository, IPaymentHistoryRepository paymentHistoryRepository)
+        public MainWindowViewModel(string username, IUserRepository userRepository, INotesRepository notesRepository, IPaymentHistoryRepository paymentHistoryRepository, ILogger loggger)
         {
             LoggedInUsername = $"Trener - {username}";
             _userRepository = userRepository;
             _notesRepository = notesRepository;
             _paymentHistoryRepository = paymentHistoryRepository;
             _emailService = new EmailService.EmailService();
+            _logger = loggger;
             FillOutOutputList(_userRepository.GetAll());
             LogoutCommand = new RelayCommand(Logout);
             AddNewMemberCommand = new RelayCommand(AddNewMember);
@@ -277,6 +280,7 @@ namespace GymApp.ViewModel
                 _paymentHistoryRepository.Add(membersPaymennts);
                 _userRepository.Update(member);
                 _paymentHistoryRepository.Add(payments);
+                _logger.Log($"{member.Firstname} {member.Lastname} je obnovljena članarina");
                 FillOutOutputList(_userRepository.GetAll());
                 MessageBox.Show($"Uspesno obnovljena clanarina članu -> {member.Firstname + " " + member.Lastname}",
                                         "",
