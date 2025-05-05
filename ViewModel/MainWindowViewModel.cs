@@ -137,6 +137,17 @@ namespace GymApp.ViewModel
             {
                 FillOutOutputList(_userRepository.GetAll());
             }
+            if (ActiveMembersIsChecked && ActiveMembersNotPaidIsChecked)
+            {
+                FillOutOutputList(_userRepository.GetAll());
+                ActiveMembersIsChecked = false;
+                ActiveMembersNotPaidIsChecked = false;
+                HaveNotesIsChecked = false;
+                MessageBox.Show("Ne mogu biti čekirane opcije aktivni i nisu platili :)",
+                       "Greška",
+                       MessageBoxButton.OK,
+                       MessageBoxImage.Error);
+            }
             if (ActiveMembersIsChecked && HaveNotesIsChecked && !ActiveMembersNotPaidIsChecked)
             {
                 ActiveMembersWithNotes();
@@ -269,7 +280,7 @@ namespace GymApp.ViewModel
                                        MessageBoxImage.Information);
                     return;
                 }
-                var payments = _paymentHistoryRepository.Get(Id);
+                
                 member.GotEmail = false;
                 member.IsMembershipPaid = true;
                 member.PaymentDate = DateTime.Now;
@@ -279,7 +290,7 @@ namespace GymApp.ViewModel
                 membersPaymennts.MemberId = Id;
                 _paymentHistoryRepository.Add(membersPaymennts);
                 _userRepository.Update(member);
-                _paymentHistoryRepository.Add(payments);
+                
                 _logger.Log($"{member.Firstname} {member.Lastname} je obnovljena članarina");
                 FillOutOutputList(_userRepository.GetAll());
                 MessageBox.Show($"Uspesno obnovljena clanarina članu -> {member.Firstname + " " + member.Lastname}",
