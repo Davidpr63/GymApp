@@ -31,6 +31,7 @@ namespace GymApp.ViewModel
      
         #region Properties
         public string LoggedInUsername { get; set; }
+        public static string _loggedInTrainer { get; set; }
         private string _searchId = "Unesite ID člana...";
         public string SearchId { get => _searchId; set { _searchId = value; OnPropertyChanged(); SearchMember(); } }
         private bool _activeMembersIsChecked;
@@ -57,9 +58,10 @@ namespace GymApp.ViewModel
         public Action<object> OpenDetailsWindow;
         public Action<object> OpenConfirmationPage;
         private readonly IEmailService _emailService;
-        public MainWindowViewModel(string username, IUserRepository userRepository, INotesRepository notesRepository, IPaymentHistoryRepository paymentHistoryRepository, ILogger loggger)
+        public MainWindowViewModel(User LoggedInTrainer, IUserRepository userRepository, INotesRepository notesRepository, IPaymentHistoryRepository paymentHistoryRepository, ILogger loggger)
         {
-            LoggedInUsername = $"Trener - {username}";
+            LoggedInUsername = $"Trener - {LoggedInTrainer.Username}";
+            _loggedInTrainer = LoggedInTrainer.Username;
             _userRepository = userRepository;
             _notesRepository = notesRepository;
             _paymentHistoryRepository = paymentHistoryRepository;
@@ -326,6 +328,10 @@ namespace GymApp.ViewModel
         {
             Members.Clear();
             foreach (var item in list)
+                if (item.Username.Equals(_loggedInTrainer) && item.TypeUser == TypeUser.Trainer)
+                    Members.Add(item);
+            var listOfMember = list.Where(x => x.TypeUser == TypeUser.Member).ToList();
+            foreach (var item in listOfMember)
                 Members.Add(item);
         }
             

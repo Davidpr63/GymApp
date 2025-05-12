@@ -2,6 +2,7 @@
 using GymApp.Database.IRepository;
 using GymApp.Logger;
 using GymApp.Model;
+using GymApp.View;
 using Microsoft.Xaml.Behaviors.Media;
 using System;
 using System.Collections.Generic;
@@ -9,6 +10,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -32,6 +34,10 @@ namespace GymApp.ViewModel
         public string Email { get => _email; set { _email = value; OnPropertyChanged(); } }
         private string _isTrainer;
         public string IsTrainer { get => _isTrainer; set { _isTrainer = value; OnPropertyChanged(); } }
+        private string _successMesage;
+        public string SuccessMessage { get => _successMesage; set { _successMesage = value; OnPropertyChanged(); } }
+        private string _memberId;
+        public string MemberID { get => _memberId; set { _memberId = value; OnPropertyChanged(); } }
 
         private string _errorMessage;
         public string ErrorMessage { get => _errorMessage; set { _errorMessage = value; OnPropertyChanged(); } }
@@ -47,6 +53,7 @@ namespace GymApp.ViewModel
         private readonly ILogger _logger;
         public Action CloseAddWindow;
         public Action RefreshOutputList;
+        
         public AddMemberViewModel(TypeUser typeUser, IUserRepository userRepository, INotesRepository notesRepository, IPaymentHistoryRepository paymentHistoryRepository, ILogger logger)
         {
             _userRepository = userRepository;
@@ -61,9 +68,10 @@ namespace GymApp.ViewModel
             AddNewMemberCommand = new RelayCommand(AddNewMember);
         }
 
-        private void AddNewMember()
+        private async void AddNewMember()
         {
             bool result = IsAddFormValid();
+            var SuccessView = new SuccessView(this);
             if (result)
             {
                 
@@ -92,19 +100,22 @@ namespace GymApp.ViewModel
                 _paymentHistoryRepository.Add(paymentHistory);
                 if (_typeUser == TypeUser.Trainer)
                 {
-                    MessageBox.Show($"Dodat je novi trener {newMember.Firstname}",
-                    "Uspesno",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Information
-                    );
+                    SuccessMessage = $"Uspešno je dodat novi trener {newMember.Firstname} {newMember.Lastname}!";
+                    SuccessView.Show();
+                    SuccessView.Activate();
+                    await Task.Delay(1000);
+                    
+                   
                 }
                 else 
                 {
-                    MessageBox.Show($"Novi clan je uspesno dodat!\nNjegov ID : {newMember.Id}",
-                        "Uspesno",
-                        MessageBoxButton.OK,
-                        MessageBoxImage.Information
-                        );
+                    SuccessMessage = $"Član {newMember.Firstname} {newMember.Lastname} je uspešno dodat!";
+                    MemberID = $"Njegov ID : {newMember.Id}";
+                    SuccessView.Show();
+                    SuccessView.Activate();
+                    await Task.Delay(1000);
+                  
+                    
                 
                 }
                 ErrorMessage = "";
@@ -112,8 +123,7 @@ namespace GymApp.ViewModel
                 MainWindowViewModel.FillOutOutputList(_userRepository.GetAll());
                 CloseAddWindow?.Invoke();
             }
-            else
-                ErrorMessage = "Sva polja moraju biti popunjena!";
+           
         }
 
         private bool IsAddFormValid()
@@ -124,10 +134,12 @@ namespace GymApp.ViewModel
                 Username = string.Empty;
                 if (string.IsNullOrEmpty(FirstName) || string.IsNullOrEmpty(LastName)) // add email later
                 {
+                    ErrorMessage = "Sva polja moraju biti popunjena!";
                     return false;
                 }
                 if (FirstName.Equals("Unesite ime...") || LastName.Equals("Unesite prezime...")) // add email later
                 {
+                    ErrorMessage = "Sva polja moraju biti popunjena!";
                     return false;
                 }
 
@@ -135,13 +147,20 @@ namespace GymApp.ViewModel
             }
             if (string.IsNullOrEmpty(FirstName) || string.IsNullOrEmpty(LastName) || string.IsNullOrEmpty(Username) || string.IsNullOrEmpty(Password)) // add email later
             {
+                ErrorMessage = "Sva polja moraju biti popunjena!";
+                
                 return false;
             }
             if (FirstName.Equals("Unesite ime...") || LastName.Equals("Unesite prezime...") || Username.Equals("Unesite korisničko ime...")) // add email later
             {
+                ErrorMessage = "Sva polja moraju biti popunjena!";
                 return false;
             }
-
+            if (_userRepository.GetAll().FirstOrDefault(x => x.Username == Username) != null)
+            {
+                ErrorMessage = "Korisničko ime je zauzeto!";
+                return false;
+            }
             return true;
         }
         public event PropertyChangedEventHandler PropertyChanged;

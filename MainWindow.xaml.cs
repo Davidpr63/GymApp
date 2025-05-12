@@ -39,7 +39,7 @@ namespace GymApp
             InitializeComponent();
            
             
-            _viewModel = new MainWindowViewModel(trainer.Firstname, userRepository, notesRepository, paymentHistoryRepository, logger);
+            _viewModel = new MainWindowViewModel(trainer, userRepository, notesRepository, paymentHistoryRepository, logger);
             
             _viewModel.OpenAddMemberWindow = () =>
             {
@@ -67,7 +67,7 @@ namespace GymApp
             _viewModel.OpenConfirmationPage = (object id) =>
             {
                 int Id = Convert.ToInt32(id);
-                var confirmWindow = new Confirmation(Id ,userRepository, notesRepository, paymentHistoryRepository, logger);
+                var confirmWindow = new Confirmation(Id, _viewModel ,userRepository, notesRepository, paymentHistoryRepository, logger);
                 confirmWindow.Show();
                 confirmWindow.Activate();
             };

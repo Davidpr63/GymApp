@@ -12,7 +12,7 @@
     <Grid>
         <Image
             Source="/Assets/GoogleDrive.jpeg"
-            
+            Opacity="0.8"
             />
         <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
             <TextBlock

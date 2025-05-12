@@ -1,5 +1,6 @@
 ﻿using GymApp.Database.IRepository;
 using GymApp.Logger;
+using GymApp.Model;
 using GymApp.ViewModel;
 using System;
 using System.Collections.Generic;
@@ -22,17 +23,18 @@ namespace GymApp.View
     /// </summary>
     public partial class Confirmation : Window
     {
-        private MainWindowViewModel mainWindowViewModel;
+        private MainWindowViewModel _mainWindowViewModel;
         private int Id { get; set; }
         private readonly IUserRepository _userRepository;
         private readonly INotesRepository _notesRepository;
         private readonly IPaymentHistoryRepository _paymentHistoryRepository;
         private readonly ILogger _logger;
-        public Confirmation(int id ,IUserRepository userRepository, INotesRepository notesRepository, IPaymentHistoryRepository paymentHistoryRepository, ILogger logger)
+        public Confirmation(int id ,MainWindowViewModel mainWindowViewModel, IUserRepository userRepository, INotesRepository notesRepository, IPaymentHistoryRepository paymentHistoryRepository, ILogger logger)
         {
             InitializeComponent();
             _logger = logger;
-            mainWindowViewModel = new MainWindowViewModel("", userRepository, notesRepository, paymentHistoryRepository, logger);
+            User user = new User();
+            _mainWindowViewModel = mainWindowViewModel;
             _userRepository = userRepository;
             _notesRepository = notesRepository;
             _paymentHistoryRepository = paymentHistoryRepository;
@@ -59,10 +61,7 @@ namespace GymApp.View
                 _logger.Log($"Obrisan član {member.Firstname} {member.Lastname}");
                 MainWindowViewModel.FillOutOutputList(_userRepository.GetAll());
                 this.Close();
-                MessageBox.Show($"Uspesno ste obrisali člana -> {member.Firstname} {member.Lastname}",
-                       "Error",
-                       MessageBoxButton.OK,
-                       MessageBoxImage.Information);
+               
             }
             catch (Exception ex)
             {
